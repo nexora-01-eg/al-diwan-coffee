@@ -14,17 +14,36 @@ quickview → checkout → misc → cinematic lighting
 'use strict';
 
 /* ---------- 1) PRODUCT DATA MODEL (CMS-ready) ---------- */
-/** @typedef {{g:number,price:number,old?:number}} Weight */
-/** @typedef {{id:string,slug:string,name:string,nameEn:string,desc:string,roast:string,grind:string,weights:Weight[],img:string,badge?:string,featured:boolean,available:boolean}} Product */
+/* كل الأسعار لربع كيلو (250g). كل صنف له نوع: سادة / محوج (حسب المتوفر). */
+const UNIT='ربع كيلو';const UNIT_G=250;
+const SADA={k:'sada',label:'سادة'},MAHWAG={k:'mahwag',label:'محوج'};
+const V=(s,m)=>[s!=null?{...SADA,price:s}:null,m!=null?{...MAHWAG,price:m}:null].filter(Boolean);
+/** @typedef {{k:string,label:string,price:number}} Variant */
+/** @typedef {{id:string,slug:string,name:string,nameEn:string,desc:string,roast:string,grind:string,variants:Variant[],img:string,badge?:string,featured?:boolean,available:boolean}} Product */
 const PRODUCTS = [
-  {id:'p1',slug:'sada',name:'بن سادة',nameEn:'PLAIN',desc:'طحنة تركي ناعمة، قوام متوازن ومرارة هادية — الاختيار اليومي الأصيل.',roast:'وسط',grind:'تركي ناعم',slot:7,badge:'الأكثر طلبًا',featured:true,available:true,
-   weights:[{g:125,price:95},{g:250,price:180,old:190},{g:500,price:345,old:380}]},
-  {id:'p2',slug:'mahwag',name:'بن محوج',nameEn:'SPICED',desc:'خلطة الديوان السرية: هيل ومستكة ولمسة جوزة الطيب — ريحة تفتح النفس.',roast:'وسط غامق',grind:'تركي ناعم',slot:8,badge:'خلطة الديوان',featured:true,available:true,
-   weights:[{g:125,price:110},{g:250,price:210,old:220},{g:500,price:395,old:440}]},
-  {id:'p3',slug:'extra-sada',name:'إكسترا سادة',nameEn:'EXTRA PLAIN',desc:'بناية أعلى + تحميصة أعمق — وشّ أتقل وكافيين أوضح لعشاق التقيل.',roast:'غامق',grind:'تركي ناعم',slot:9,featured:true,available:true,
-   weights:[{g:125,price:135},{g:250,price:255,old:270},{g:500,price:485,old:540}]},
-  {id:'p4',slug:'extra-mahwag',name:'إكسترا محوج',nameEn:'EXTRA SPICED',desc:'قمة الديوان: إكسترا بن + تحويجة مضاعفة — فنجان ملوكي من أول رشفة.',roast:'غامق',grind:'تركي ناعم',slot:10,badge:'إصدار ملوكي',featured:true,available:true,
-   weights:[{g:125,price:150},{g:250,price:285,old:300},{g:500,price:540,old:600}]},
+  {id:'p01',slug:'diwan-sada',name:'الديوان السادة',nameEn:'AL DIWAN PLAIN',desc:'خلطة الديوان الأساسية — طحنة تركي متوازنة ومرارة هادية.',roast:'وسط',grind:'تركي ناعم',img:'assets/products/p01.jpg',badge:'الأكثر طلبًا',featured:true,available:true,variants:V(180,210)},
+  {id:'p02',slug:'diwan-medium',name:'الديوان وسط',nameEn:'AL DIWAN MEDIUM',desc:'تحميص وسط متوازن — حلاوة وقوام ووشّ تركي غني.',roast:'وسط',grind:'تركي ناعم',img:'assets/products/p02.jpg',available:true,variants:V(180,210)},
+  {id:'p03',slug:'diwan-dark',name:'الديوان غامق',nameEn:'AL DIWAN DARK',desc:'تحميص غامق — شوكولاتة محمصة ومرارة عميقة لعشاق التقيل.',roast:'غامق',grind:'تركي ناعم',img:'assets/products/p03.jpg',available:true,variants:V(180,210)},
+  {id:'p04',slug:'diwan-extra',name:'الديوان إكسترا',nameEn:'AL DIWAN EXTRA',desc:'بناية أعلى وتحميصة أعمق — كافيين أوضح ووشّ أتقل.',roast:'غامق',grind:'تركي ناعم',img:'assets/products/p04.jpg',badge:'إصدار ملوكي',featured:true,available:true,variants:V(190,220)},
+  {id:'p05',slug:'super',name:'سوبر',nameEn:'SUPER',desc:'توليفة قوية بسعر اقتصادي — ثابتة في الفنجان.',roast:'وسط',grind:'تركي ناعم',img:'assets/products/p05.jpg',available:true,variants:V(145,175)},
+  {id:'p06',slug:'espresso',name:'إسبريسو',nameEn:'ESPRESSO',desc:'تحميص غامق مخصص للإسبريسو — كريما كثيفة وثبات عالي.',roast:'غامق',grind:'إسبريسو',img:'assets/products/p06.jpg',available:true,variants:V(200,null)},
+  {id:'p07',slug:'brazilian',name:'برازيلي',nameEn:'BRAZILIAN',desc:'برازيلي ناعم — حلاوة وقوام متوسط ونهاية هادية.',roast:'وسط',grind:'تركي ناعم',img:'assets/products/p07.jpg',available:true,variants:V(170,200)},
+  {id:'p08',slug:'royal',name:'ملوكي',nameEn:'ROYAL',desc:'خلطة ملوكية فاخرة — توازن غني وريحة فخمة.',roast:'وسط',grind:'تركي ناعم',img:'assets/products/p08.jpg',badge:'فاخر',available:true,variants:V(180,210)},
+  {id:'p09',slug:'indonesian-light',name:'إندونيسي فاتح',nameEn:'INDONESIAN LIGHT',desc:'إندونيسي فاتح — حموضة زاهية ونكهات عشبية.',roast:'فاتح',grind:'تركي ناعم',img:'assets/products/p09.jpg',available:true,variants:V(150,180)},
+  {id:'p10',slug:'mexican',name:'مكسيكي',nameEn:'MEXICAN',desc:'مكسيكي متوازن — حلاوة كراميل لطيفة.',roast:'وسط',grind:'تركي ناعم',img:'assets/products/p10.jpg',available:true,variants:V(165,195)},
+  {id:'p11',slug:'abyssinian',name:'حبشي',nameEn:'ABYSSINIAN',desc:'حبشي أصيل — قوام غني ونكهات دافئة.',roast:'وسط',grind:'تركي ناعم',img:'assets/products/p11.jpg',available:true,variants:V(160,190)},
+  {id:'p12',slug:'yemeni',name:'يمني',nameEn:'YEMENI',desc:'يمني فاخر — نكهة معتقة وعمق مميز.',roast:'وسط',grind:'تركي ناعم',img:'assets/products/p12.jpg',badge:'فاخر',available:true,variants:V(270,300)},
+  {id:'p13',slug:'colombian',name:'كولومبي',nameEn:'COLOMBIAN',desc:'كولومبي منتقى — حلاوة فاكهية وتوازن راقي.',roast:'وسط',grind:'تركي ناعم',img:'assets/products/p13.jpg',available:true,variants:V(235,265)},
+  {id:'p14',slug:'guatemala',name:'غواتيمالا',nameEn:'GUATEMALA',desc:'غواتيمالا — شوكولاتة وبهارات خفيفة.',roast:'وسط',grind:'تركي ناعم',img:'assets/products/p14.jpg',available:true,variants:V(165,195)},
+  {id:'p15',slug:'costa-rica',name:'كوستاريكا',nameEn:'COSTA RICA',desc:'كوستاريكا — نقاء وحلاوة عسلية.',roast:'وسط',grind:'تركي ناعم',img:'assets/products/p15.jpg',available:true,variants:V(165,195)},
+  {id:'p16',slug:'tahmees',name:'قهوة التحميص',nameEn:'AL TAHMEES',desc:'خلطة التحميص الخاصة — قهوة غنية بمذاق مميز.',roast:'وسط',grind:'تركي ناعم',img:'assets/products/p16.jpg',available:true,variants:V(135,null)},
+  {id:'p17',slug:'arabic',name:'بن عربي',nameEn:'ARABIC',desc:'بن عربي بالتحويجة — هيل ومستكة وريحة شرقية.',roast:'وسط',grind:'تركي ناعم',img:'assets/products/p17.jpg',available:true,variants:V(null,105)},
+  {id:'p18',slug:'french-flavored',name:'فرنساوي نكهات',nameEn:'FRENCH FLAVORED',desc:'فرنساوي بنكهات — تحميص خاص ومذاق مميز.',roast:'وسط',grind:'تركي ناعم',img:'assets/products/p18.jpg',available:true,variants:V(135,null)},
+  {id:'p19',slug:'french',name:'فرنساوي',nameEn:'FRENCH',desc:'فرنساوي كلاسيك — تحميص غامق ومذاق غني.',roast:'غامق',grind:'تركي ناعم',img:'assets/products/p19.jpg',available:true,variants:V(135,null)},
+  {id:'p20',slug:'french-hazelnut',name:'فرنساوي بندق قطع',nameEn:'FRENCH HAZELNUT',desc:'فرنساوي مع قطع البندق — نكهة مقرمشة مميزة.',roast:'غامق',grind:'تركي ناعم',img:'assets/products/p20.jpg',available:true,variants:V(135,null)},
+  {id:'p21',slug:'espresso-lavada',name:'إسبريسو لافادا',nameEn:'ESPRESSO LAVADA',desc:'إسبريسو فاخر — كريما غنية ونكهة قوية.',roast:'غامق',grind:'إسبريسو',img:'assets/products/p21.jpg',available:true,variants:V(325,null)},
+  {id:'p22',slug:'oriental-blend',name:'توليفة شرقي',nameEn:'ORIENTAL BLEND',desc:'توليفة شرقي — بن عربي + تحويجة غنية.',roast:'وسط',grind:'تركي ناعم',img:'assets/products/p22.jpg',available:true,variants:V(190,220)},
+  {id:'p23',slug:'indian-robusta',name:'هندي روبوستا',nameEn:'INDIAN ROBUSTA',desc:'هندي روبوستا — قوام تقيل وكافيين عالي.',roast:'غامق',grind:'تركي ناعم',img:'assets/products/p23.jpg',available:true,variants:V(145,175)},
 ];
 /* CMS: REVIEWS — placeholders صريحة، تُستبدل ببيانات حقيقية */
 const REVIEWS = [
@@ -37,6 +56,34 @@ const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelect
 const EGP=n=>`${n} EGP`;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMobile=matchMedia('(max-width: 640px)').matches;
+
+/* slot image helper: drop an <img> into a .img-ph box; if the file is missing
+   it removes itself and the numbered placeholder stays visible. */
+/* if a slot image is missing, try .jpg once, then give up and keep the placeholder */
+window.onImgErr=function(im){try{const s=im.getAttribute('src')||'';if(!im.dataset.t&&/\.png$/i.test(s)){im.dataset.t='1';im.src=s.replace(/\.png$/i,'.jpg');return;}}catch(e){}im.remove();};
+function setPhImg(el,src,label,desc){
+ if(!el)return;
+ el.dataset.slot=label;
+ const sp=el.querySelector('span');if(sp)sp.textContent=label;
+ const sm=el.querySelector('small');if(sm)sm.textContent=desc||'';
+ let im=el.querySelector(':scope>img');
+ if(!im){im=document.createElement('img');im.loading='lazy';el.insertBefore(im,el.firstChild);}
+ im.alt=desc||'';im.onerror=()=>window.onImgErr(im);
+ if(im.getAttribute('src')!==src)im.src=src;
+}
+/* صور المكان (15) — موزّعة بعناية حسب المحتوى والاتجاه:
+   1 الهيرو (واجهة المحل) | 2-6 مشاهد القصة | 11-15 المجلس | 16-20 حكاية الديوان | 21 البانر */
+const SLOT_IMGS={
+ 1:'assets/gallery/g01.jpg',                                                          // واجهة المحل — الهيرو
+ 2:'assets/gallery/g04.jpg',3:'assets/gallery/g12.jpg',4:'assets/gallery/g06.jpg',    // مشاهد القصة
+ 5:'assets/gallery/g03.jpg',6:'assets/gallery/g15.jpg',
+ 11:'assets/gallery/g09.jpg',12:'assets/gallery/g10.jpg',13:'assets/gallery/g11.jpg', // المجلس
+ 14:'assets/gallery/g14.jpg',15:'assets/gallery/g08.jpg',
+ 16:'assets/gallery/g05.jpg',17:'assets/gallery/g02.jpg',18:'assets/gallery/g07.jpg', // حكاية الديوان (بينتو)
+ 19:'assets/gallery/g13.jpg',20:'assets/gallery/g06.jpg',
+ 21:'assets/gallery/g01.jpg'};                                                        // البانر (واجهة عريضة)
+function bindSlotImgs(){$$('.img-ph[data-slot]').forEach(el=>{const src=SLOT_IMGS[el.dataset.slot];if(src)setPhImg(el,src,el.dataset.slot,el.querySelector('small')?.textContent||'');});}
+bindSlotImgs();
 
 /* ---------- 2) LOADER (cinematic sequence) ---------- */
 (()=>{const fill=$('#loadfill'),txt=$('#loadtxt'),l=$('#loader');
@@ -231,23 +278,23 @@ onUpdate(self){const i=Math.min(4,Math.floor(self.progress*5));if(i!==cur)setSce
 window.setScene=setScene;})();
 
 /* ---------- 6) CONFIGURATOR ---------- */
-const cfg={p:PRODUCTS[0],w:0,qty:1};
+const cfg={p:PRODUCTS[0],v:0,qty:1};
 function renderCfgBlends(){$('#cfgBlends').innerHTML=PRODUCTS.map(p=>
  `<button class="chip-opt ${p.id===cfg.p.id?'on':''}" data-id="${p.id}">${p.name}</button>`).join('');
- $$('#cfgBlends .chip-opt').forEach(b=>b.onclick=()=>{cfg.p=PRODUCTS.find(p=>p.id===b.dataset.id);cfg.w=0;syncCfg();});}
-function renderCfgWeights(){$('#cfgWeights').innerHTML=cfg.p.weights.map((w,i)=>
- `<button class="chip-opt ${i===cfg.w?'on':''}" data-i="${i}">${w.g}g — ${w.price} EGP</button>`).join('');
- $$('#cfgWeights .chip-opt').forEach(b=>b.onclick=()=>{cfg.w=+b.dataset.i;syncCfg();});}
-function syncCfg(){const w=cfg.p.weights[cfg.w];
+ $$('#cfgBlends .chip-opt').forEach(b=>b.onclick=()=>{cfg.p=PRODUCTS.find(p=>p.id===b.dataset.id);cfg.v=0;syncCfg();});}
+function renderCfgVariants(){$('#cfgWeights').innerHTML=cfg.p.variants.map((v,i)=>
+ `<button class="chip-opt ${i===cfg.v?'on':''}" data-i="${i}">${v.label} — ${v.price} EGP</button>`).join('');
+ $$('#cfgWeights .chip-opt').forEach(b=>b.onclick=()=>{cfg.v=+b.dataset.i;syncCfg();});}
+function syncCfg(){const v=cfg.p.variants[cfg.v]||cfg.p.variants[0];cfg.v=cfg.p.variants.indexOf(v);
  $('#cfgName').textContent=cfg.p.name;$('#cfgDesc').textContent=cfg.p.desc;
  $('#cfgRoast').textContent=cfg.p.roast;$('#cfgGrind').textContent=cfg.p.grind;
- $('#cfgPrice').textContent=EGP(w.price);$('#cfgOld').textContent=w.old?EGP(w.old):'';
+ $('#cfgPrice').textContent=EGP(v.price);$('#cfgOld').textContent='';
  $('#qVal').textContent=cfg.qty;
- const slot=$('#cfgSlot');if(slot){slot.dataset.slot=cfg.p.slot;slot.querySelector('span').textContent=cfg.p.slot;}
- renderCfgBlends();renderCfgWeights();}
+ setPhImg($('#cfgSlot'),cfg.p.img,cfg.p.name,cfg.p.name);
+ renderCfgBlends();renderCfgVariants();}
 $('#qPlus').onclick=()=>{cfg.qty=Math.min(20,cfg.qty+1);$('#qVal').textContent=cfg.qty;};
 $('#qMinus').onclick=()=>{cfg.qty=Math.max(1,cfg.qty-1);$('#qVal').textContent=cfg.qty;};
-$('#cfgAdd').onclick=()=>{addToCart(cfg.p.id,cfg.w,cfg.qty);};
+$('#cfgAdd').onclick=()=>{addToCart(cfg.p.id,cfg.v,cfg.qty);};
 $('#cfgView').onclick=()=>openQV(cfg.p.id);
 syncCfg();
 
@@ -258,12 +305,13 @@ $$('.roast-card').forEach(c=>c.onclick=()=>{
  toast(c.dataset.r==='light'?'تحميص فاتح — زاهي وخفيف ☀':c.dataset.r==='medium'?'تحميص وسط — توازن الديوان ⚖':'تحميص غامق — تقيل وفاخر 🌙');});
 
 /* ---------- 8) PRODUCT GRID + REVIEWS ---------- */
-function renderGrid(){$('#productGrid').innerHTML=PRODUCTS.map(p=>{const w0=p.weights[0];return `
+function renderGrid(){$('#productGrid').innerHTML=PRODUCTS.map(p=>{const min=Math.min(...p.variants.map(v=>v.price));return `
  <article class="pcard">
-  <div class="ph img-ph" data-slot="${p.slot}"><span>${p.slot}</span></div>${p.badge?`<span class="badge">${p.badge}</span>`:''}
+  <div class="ph img-ph" data-slot="${p.name}"><img src="${p.img}" alt="${p.name}" loading="lazy" onerror="onImgErr(this)"><span>${p.name}</span><small>صورة ${p.name}</small></div>${p.badge?`<span class="badge">${p.badge}</span>`:''}
   <div class="pb"><h3>${p.name} <small style="color:#a08c5a" class="en">${p.nameEn}</small></h3>
-   <p>${p.desc}</p><div class="stars">★★★★★ <small style="color:#a08c5a">جديد</small></div>
-   <div class="prow"><span class="price">${w0.price} EGP</span><small style="color:#8a7c55">125g يبدأ من</small></div>
+   <p>${p.desc}</p>
+   <div class="pvars">${p.variants.map(v=>`<span>${v.label} <b>${v.price} EGP</b></span>`).join('')}</div>
+   <div class="prow"><span class="price">من ${min} EGP</span><small style="color:#8a7c55">${UNIT}</small></div>
    <div class="card-actions">
     <button class="mini-btn add" data-add="${p.id}">+ سلة</button>
     <button class="mini-btn" data-qv="${p.id}">عرض</button>
@@ -280,21 +328,22 @@ renderGrid();renderReviews();
 const store={get(){try{return JSON.parse(localStorage.getItem('aldiwan_cart_v1'))||[]}catch(e){return[]}},
  set(v){localStorage.setItem('aldiwan_cart_v1',JSON.stringify(v));renderCart();}};
 let cart=store.get();
-function addToCart(pid,wi=0,qty=1){const p=PRODUCTS.find(x=>x.id===pid);if(!p||!p.available)return;
- const key=pid+'_'+p.weights[wi].g;const ex=cart.find(i=>i.key===key);
- if(ex)ex.qty=Math.min(20,ex.qty+qty);else cart.push({key,pid,wi,qty});
- store.set(cart);toast(`اتضافت للسلة: ${p.name} ${p.weights[wi].g}g ✓`);openSheet('#cartSheet');}
+function addToCart(pid,vi=0,qty=1){const p=PRODUCTS.find(x=>x.id===pid);if(!p||!p.available)return;
+ const v=p.variants[vi]||p.variants[0];vi=p.variants.indexOf(v);
+ const key=pid+'_'+v.k;const ex=cart.find(i=>i.key===key);
+ if(ex)ex.qty=Math.min(20,ex.qty+qty);else cart.push({key,pid,vi,qty});
+ store.set(cart);toast(`اتضافت للسلة: ${p.name} ${v.label} ✓`);openSheet('#cartSheet');}
 function renderCart(){const box=$('#cartItems');
  if(!cart.length){box.innerHTML=`<div class="empty">سلتك فاضية...<br><b>ريحتها بن؟ يبقى لازم تتملي ☕</b><br><a href="#shop" class="btn btn-gold btn-sm" style="margin-top:12px" onclick="closeAll()">اكتشف البن</a></div>`;}
- else box.innerHTML=cart.map((i,idx)=>{const p=PRODUCTS.find(x=>x.id===i.pid),w=p.weights[i.wi];return `
-  <div class="citem"><div class="citem-thumb img-ph" data-slot="${p.slot}"><span>${p.slot}</span></div>
-   <div><b>${p.name} — ${w.g}g</b><small>${w.price} EGP × ${i.qty} = <b>${w.price*i.qty}</b></small>
+ else box.innerHTML=cart.map((i,idx)=>{const p=PRODUCTS.find(x=>x.id===i.pid),v=p.variants[i.vi]||p.variants[0];return `
+  <div class="citem"><div class="citem-thumb img-ph" data-slot="${p.name}"><img src="${p.img}" alt="${p.name}" onerror="onImgErr(this)"><span>${p.name}</span></div>
+   <div><b>${p.name} — ${v.label}</b><small>${v.price} EGP × ${i.qty} = <b>${v.price*i.qty}</b></small>
     <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
      <button class="mini-btn" style="padding:4px 12px" onclick="chQty(${idx},-1)">−</button><b>${i.qty}</b>
      <button class="mini-btn" style="padding:4px 12px" onclick="chQty(${idx},1)">+</button>
      <button class="rm" onclick="rmItem(${idx})">حذف</button></div></div>
-   <b>${w.price*i.qty}</b></div>`;}).join('');
- const total=cart.reduce((s,i)=>{const p=PRODUCTS.find(x=>x.id===i.pid);return s+p.weights[i.wi].price*i.qty;},0);
+   <b>${v.price*i.qty}</b></div>`;}).join('');
+ const total=cart.reduce((s,i)=>{const p=PRODUCTS.find(x=>x.id===i.pid),v=p.variants[i.vi]||p.variants[0];return s+v.price*i.qty;},0);
  const count=cart.reduce((s,i)=>s+i.qty,0);
  $('#cartTotal').textContent=EGP(total);$('#cartCount').textContent=count;$('#mCount').textContent=count;}
 window.chQty=(idx,d)=>{cart[idx].qty=Math.max(1,Math.min(20,cart[idx].qty+d));store.set(cart);};
@@ -303,29 +352,29 @@ window.closeAll=closeAll;
 renderCart();
 
 /* ---------- 10) QUICK VIEW ---------- */
-let qv={pid:'p1',wi:0};
-function openQV(pid){const p=PRODUCTS.find(x=>x.id===pid);qv={pid,wi:0};
- const qs=$('#qvSlot');if(qs){qs.dataset.slot=p.slot;qs.querySelector('span').textContent=p.slot;}
+let qv={pid:'p01',vi:0};
+function openQV(pid){const p=PRODUCTS.find(x=>x.id===pid);qv={pid,vi:0};
+ setPhImg($('#qvSlot'),p.img,p.name,p.name);
  $('#qvName').textContent=p.name;$('#qvDesc').textContent=p.desc;
  $('#qvRoast').textContent=p.roast;
- $('#qvWeights').innerHTML=p.weights.map((w,i)=>`<button class="chip-opt ${i===0?'on':''}" data-i="${i}">${w.g}g — ${w.price} EGP</button>`).join('');
- $$('#qvWeights .chip-opt').forEach(b=>b.onclick=()=>{qv.wi=+b.dataset.i;
+ $('#qvWeights').innerHTML=p.variants.map((v,i)=>`<button class="chip-opt ${i===0?'on':''}" data-i="${i}">${v.label} — ${v.price} EGP</button>`).join('');
+ $$('#qvWeights .chip-opt').forEach(b=>b.onclick=()=>{qv.vi=+b.dataset.i;
   $$('#qvWeights .chip-opt').forEach(x=>x.classList.remove('on'));b.classList.add('on');
-  $('#qvPrice').textContent=EGP(p.weights[qv.wi].price);});
- $('#qvPrice').textContent=EGP(p.weights[0].price);
+  $('#qvPrice').textContent=EGP(p.variants[qv.vi].price);});
+ $('#qvPrice').textContent=EGP(p.variants[0].price);
  $('#qvModal').classList.add('show');scrim.classList.add('show');}
 window.openQV=openQV;
-$('#qvAdd').onclick=()=>{addToCart(qv.pid,qv.wi,1);closeAll();setTimeout(()=>openSheet('#cartSheet'),150);};
+$('#qvAdd').onclick=()=>{addToCart(qv.pid,qv.vi,1);closeAll();setTimeout(()=>openSheet('#cartSheet'),150);};
 
 /* ---------- 11) CHECKOUT (steps) ---------- */
 let coStep=1,ship={};
 $('#goCheckout').onclick=()=>{if(!cart.length){toast('سلتك فاضية — اختار خلطتك الأول ☕');return;}
  closeAll();coStep=1;renderCO();$('#coModal').classList.add('show');scrim.classList.add('show');};
 function renderCO(){$$('#coModal .steps span').forEach(s=>s.classList.toggle('on',+s.dataset.s===coStep));
- const total=cart.reduce((s,i)=>{const p=PRODUCTS.find(x=>x.id===i.pid);return s+p.weights[i.wi].price*i.qty;},0);
+ const total=cart.reduce((s,i)=>{const p=PRODUCTS.find(x=>x.id===i.pid),v=p.variants[i.vi]||p.variants[0];return s+v.price*i.qty;},0);
  const shipCost=total>=400?0:30;
- if(coStep===1)$('#coBody').innerHTML=`${cart.map(i=>{const p=PRODUCTS.find(x=>x.id===i.pid),w=p.weights[i.wi];
-  return `<div class="brow">☕<span><b>${p.name} ${w.g}g</b> × ${i.qty} — <b>${w.price*i.qty} EGP</b></span></div>`;}).join('')}
+ if(coStep===1)$('#coBody').innerHTML=`${cart.map(i=>{const p=PRODUCTS.find(x=>x.id===i.pid),v=p.variants[i.vi]||p.variants[0];
+  return `<div class="brow">☕<span><b>${p.name} ${v.label}</b> × ${i.qty} — <b>${v.price*i.qty} EGP</b></span></div>`;}).join('')}
   <div class="total-row"><span>المجموع + شحن ${shipCost?shipCost+' EGP':'مجاني 🎉'}</span><span>${total+shipCost} EGP</span></div>
   <button class="btn btn-gold" style="width:100%;justify-content:center" onclick="coGo(2)">التالي: بيانات التوصيل ←</button>
   <small style="color:var(--muted)">شحن مجاني فوق 400 EGP • الدفع كاش عند الاستلام</small>`;
@@ -438,16 +487,18 @@ const quiz={a:null,b:null,c:null};
 $$('#quiz [data-q] button').forEach(b=>b.onclick=()=>{
  const box=b.closest('.quiz-q');const q=box?box.dataset.q:null;if(!q)return;quiz[q]=b.dataset.v;
  [...box.querySelectorAll('button')].forEach(x=>x.classList.remove('on'));b.classList.add('on');
- if(quiz.a&&quiz.b&&quiz.c){let id='p2';
-  if(quiz.a==='calm'&&quiz.b==='plain')id='p1';
-  if(quiz.a==='calm'&&quiz.b==='spiced')id='p2';
-  if(quiz.a==='strong'&&quiz.c==='turkish')id=quiz.b==='spiced'?'p4':'p3';
-  if(quiz.a==='strong'&&quiz.c==='filter')id='p3';
+ if(quiz.a&&quiz.b&&quiz.c){let id='p01';
+  if(quiz.a==='calm'&&quiz.c==='filter')id='p09';
+  else if(quiz.a==='calm')id='p02';
+  else if(quiz.c==='filter')id='p04';
+  else id=quiz.b==='spiced'?'p04':'p03';
   const p=PRODUCTS.find(x=>x.id===id);
-  $('#quizResult').innerHTML=`ترشيح الديوان ليك: <b>${p.name}</b> — ${p.desc}`;
-  const go=$('#quizGo');go.style.display='inline-flex';go.onclick=()=>cfgPick(id);}});
-window.cfgPick=function(id){const p=PRODUCTS.find(x=>x.id===id);if(!p)return;
- cfg.p=p;cfg.w=0;syncCfg();const t=$('#shop');
+  const wantK=quiz.b==='spiced'?'mahwag':'sada';
+  let vi=p.variants.findIndex(v=>v.k===wantK);if(vi<0)vi=0;
+  $('#quizResult').innerHTML=`ترشيح الديوان ليك: <b>${p.name}</b> (${p.variants[vi].label}) — ${p.desc}`;
+  const go=$('#quizGo');go.style.display='inline-flex';go.onclick=()=>cfgPick(id,vi);}});
+window.cfgPick=function(id,vi=0){const p=PRODUCTS.find(x=>x.id===id);if(!p)return;
+ cfg.p=p;cfg.v=vi;syncCfg();const t=$('#shop');
  if(window.__lenis)window.__lenis.scrollTo(t,{offset:-70,duration:1.4});
  else t.scrollIntoView({behavior:reduced?'auto':'smooth'});};
 
