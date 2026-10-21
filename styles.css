@@ -372,14 +372,31 @@ footer{background:#080503;border-top:1px solid var(--glass-brd);padding:70px 0 3
   nav.main{display:none}.burger{display:grid}
   .story-pin{min-height:auto;position:static}
   .story-media{min-height:320px}
+  .cup-stage{justify-content:center}
+  .hero-copy{text-align:center}
+  .hero-copy .lead{margin-left:auto;margin-right:auto}
+  .hero-ctas{justify-content:center}
 }
 @media(max-width:640px){
-  section{padding:70px 0}
+  html,body{overflow-x:hidden}
+  section{padding:64px 0}
+  .wrap{padding:0 16px}
   .grid,.rev-grid,.roast-cards,.branch-grid,.fgrid,.meta-grid{grid-template-columns:1fr}
   .bento{grid-template-columns:1fr}
   #mobilebar{display:flex}
   body{padding-bottom:76px}
-  .display{font-size:2.4rem}
+  .display{font-size:clamp(2.2rem,10vw,3rem)}
+  .hero{padding:90px 16px 70px}
+  .hero-inner{gap:18px}
+  .cup-frame{width:min(300px,80vw);height:min(300px,80vw)}
+  .story-media{min-height:260px}
+  .scene-card{padding:18px;border-radius:16px}
+  .scene-num{font-size:clamp(4rem,18vw,6rem)}
+  .pcard{border-radius:16px}
+  .cart-drawer{width:min(94vw,420px)}
+  .qv-inner{grid-template-columns:1fr;padding:18px}
+  .marquee{font-size:.9rem}
+  .footer-grid{grid-template-columns:1fr;gap:18px}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
@@ -574,9 +591,12 @@ IMAGE PLACEHOLDERS — أماكن مرقمة للصور الجديدة
   padding:8px 13px;border-radius:99px;border:1px solid var(--glass-brd);background:rgba(255,255,255,.05);
   color:var(--gold-light);cursor:pointer;transition:.25s;line-height:1}
 .lang-btn:hover{background:rgba(220,169,94,.2);transform:translateY(-1px)}
-.story-media .scene-ph{position:absolute;inset:0;min-height:0;margin:0;
-  opacity:0;transform:scale(1.06);transition:opacity .8s,transform 1.2s;border-radius:var(--r-lg)}
-.story-media .scene-ph.active{opacity:1;transform:scale(1)}
+.story-media .scene-ph{position:absolute;inset:0;min-height:0;margin:0;overflow:hidden;
+  opacity:0;transform:scale(1.08);transition:opacity .9s ease,transform 11s cubic-bezier(0.25,0.46,0.45,0.94);border-radius:var(--r-lg)}
+.story-media .scene-ph.active{opacity:1;transform:scale(1.14)}
+.story-media .scene-ph>picture,
+.story-media .scene-ph>picture>img,
+.story-media .scene-ph>img{width:100%;height:100%;object-fit:cover}
 #cfgSlot{min-height:340px}
 #qvSlot{aspect-ratio:3/4;min-height:280px}
 .council-card .img-ph,.bento figure .img-ph{position:absolute;inset:0;height:100%;border:0;border-radius:0;
