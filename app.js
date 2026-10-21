@@ -89,25 +89,25 @@ window.mountIcons=mountIcons;mountIcons();
    if the file is missing the <img> errors and the placeholder stays visible. */
 window.onImgErr=function(im){try{const pic=im.closest('picture');if(pic)pic.remove();else im.remove();}catch(e){}};
 function setPhImg(el,src,label,desc){
- if(!el)return;
- el.dataset.slot=label;
- const sp=el.querySelector('span');if(sp)sp.textContent=label;
- const sm=el.querySelector('small');if(sm)sm.textContent=desc||'';
- if(!src){const old=el.querySelector(':scope>picture');if(old)old.remove();el.classList.add('noimg');return;}
- el.classList.remove('noimg');
- let pic=el.querySelector(':scope>picture');
- if(!pic){pic=document.createElement('picture');
-  const im=document.createElement('img');im.loading='lazy';im.alt='';
-  pic.appendChild(im);el.insertBefore(pic,el.firstChild);}
- const im=pic.querySelector('img');
- const so=pic.querySelector('source[type="image/webp"]');
- if(/\.(jpe?g|png)$/i.test(src)){
-  const webp=src.replace(/\.(jpe?g|png)$/i,'.webp');
-  let s=so;if(!s){s=document.createElement('source');s.type='image/webp';pic.insertBefore(s,im);}
-  if(s.getAttribute('srcset')!==webp)s.setAttribute('srcset',webp);
- }else if(so){so.remove();}
- im.alt=desc||'';im.onerror=function(){window.onImgErr(this);};
- if(im.getAttribute('src')!==src){im.dataset.t='';im.setAttribute('src',src);}
+  if(!el)return;
+  el.dataset.slot=label;
+  const sp=el.querySelector('span');if(sp)sp.textContent=label;
+  const sm=el.querySelector('small');if(sm)sm.textContent=desc||'';
+  if(!src){const old=el.querySelector(':scope>picture');if(old)old.remove();el.classList.add('noimg');return;}
+  el.classList.remove('noimg');
+  let pic=el.querySelector(':scope>picture');
+  if(!pic){pic=document.createElement('picture');const im=document.createElement('img');im.loading='lazy';im.decoding='async';im.alt='';pic.appendChild(im);el.insertBefore(pic,el.firstChild);}
+  const im=pic.querySelector('img');
+  const so=pic.querySelector('source[type="image/webp"]');
+  if(/\.(jpe?g|png)$/i.test(src)){
+    const webp=src.replace(/\.(jpe?g|png)$/i,'.webp');
+    let s=so;if(!s){s=document.createElement('source');s.type='image/webp';pic.insertBefore(s,im);}
+    if(s.getAttribute('srcset')!==webp)s.setAttribute('srcset',webp);
+  }else if(so){so.remove();}
+  im.alt=desc||`AL-DEWAN - ${label||''}`;
+  im.loading='lazy';im.decoding='async';
+  im.onerror=function(){if(window.onImgErr)window.onImgErr(this);};
+  if(im.getAttribute('src')!==src){im.removeAttribute('data-t');im.src=src;}
 }
 /* صور المكان + القصة المحدّثة:
    1 فنجان الهيرو | 2-6 مشاهد القصة (أصل→تحميص→خلطة→فنجان→منتج) | 11-15 المجلس | 16-20 حكاية الديوان | 21 بانر الباند */
