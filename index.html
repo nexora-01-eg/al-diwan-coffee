@@ -1,22 +1,24 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0e0805">
-<title>بُن الديوان — أصل القهوة | AL DIWAN COFFEE</title>
+<title>بُن الديوان — أصل القهوة | AL-DEWAN COFFEE</title>
 <meta name="description" content="بُن الديوان — أصل القهوة. بن سادة، محوج، إكسترا. اطلب أونلاين من شبين الكوم ومنوف. تجربة سينمائية فاخرة وتسوق سريع.">
 <meta property="og:title" content="بُن الديوان — أصل القهوة">
 <meta property="og:description" content="قهوة تُحضر بحكاية... وتُقدّم بأصالة. تسوق الآن.">
 <meta property="og:image" content="assets/logo-full.png">
 <meta property="og:type" content="website">
 <link rel="icon" href="assets/logo.png">
+  <link rel="preload" as="image" href="assets/intro.webp" type="image/webp">
+  <link rel="preload" as="image" href="assets/hero-bg.webp" type="image/webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Aref+Ruqaa:wght@400;700&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Organization","name":"Al Diwan Coffee — بن الديوان","slogan":"أصل القهوة",
+{"@context":"https://schema.org","@type":"Organization","name":"AL-DEWAN Coffee — بن الديوان","slogan":"أصل القهوة",
 "address":[{"@type":"PostalAddress","addressLocality":"شبين الكوم","streetAddress":"شارع صبري أبو علم، أمام بشاير الخير"},
 {"@type":"PostalAddress","addressLocality":"منوف","streetAddress":"شارع بورسعيد، أمام بنزينة مصر"}]}
 </script>
@@ -36,12 +38,13 @@
 
 <!-- LOADER : cinematic intro (logo → pattern → beans → product → type) -->
 <div id="loader" role="status" aria-label="جاري التحميل">
+  <div class="loader-bg" aria-hidden="true"></div>
   <div class="loader-mark">
     <div class="loader-ring"></div>
     <img src="assets/logo.png" alt="بُن الديوان — أصل القهوة">
   </div>
   <div style="font-family:var(--font-display);font-size:1.8rem">بُن <span style="color:var(--gold)">الديوان</span></div>
-  <div class="en" style="color:var(--gold)">AL DIWAN COFFEE — أصل القهوة</div>
+  <div class="en" style="color:var(--gold)">AL-DEWAN COFFEE — أصل القهوة</div>
   <div class="loader-bar"><i id="loadfill"></i></div>
   <div class="loader-txt" id="loadtxt">نُحمّص الحكاية...</div>
 </div>
@@ -50,16 +53,17 @@
 <header id="header" class="floating">
   <a class="brand" href="#home" aria-label="الديوان الرئيسية">
     <span class="brand-mark"><img src="assets/logo.png" alt="بُن الديوان"></span>
-    <span><b>بُن الديوان</b><small>AL DIWAN</small></span>
+    <span><b>بُن الديوان</b><small>AL-DEWAN</small></span>
   </a>
   <nav class="main" aria-label="التنقل الرئيسي">
-    <a href="#home">الرئيسية</a><a href="#story">الحكاية</a><a href="#shop">المنتجات</a>
+    <a href="#home">الرئيسية</a><a href="#story">الحكاية</a><a href="#products">المنتجات</a>
     <a href="#our-story">قصتنا</a><a href="#branches">الفروع</a><a href="#contact">تواصل</a>
   </nav>
   <div class="head-actions">
-    <a href="#shop" class="btn btn-gold btn-sm magnetic" style="display:inline-flex">تسوق الآن</a>
-    <button class="cart-btn" id="openCart" aria-label="فتح السلة">🛒<span class="cart-count" id="cartCount">0</span></button>
-    <button class="burger" id="openMenu" aria-label="القائمة">☰</button>
+    <button class="lang-btn" id="langBtn" type="button" aria-label="تبديل اللغة / Switch language">EN</button>
+    <a href="#products" class="btn btn-gold btn-sm magnetic" style="display:inline-flex">تسوق الآن</a>
+    <button class="cart-btn" id="openCart" aria-label="فتح السلة"><span class="ico" data-ico="cart"></span><span class="cart-count" id="cartCount">0</span></button>
+    <button class="burger" id="openMenu" aria-label="القائمة"><span class="ico" data-ico="menu"></span></button>
   </div>
 </header>
 
@@ -68,23 +72,27 @@
 <aside class="sheet" id="menuSheet" aria-label="قائمة الموبايل">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span style="display:flex;align-items:center;gap:10px"><img src="assets/logo.png" alt="الديوان" style="width:46px;height:46px;object-fit:contain"><b style="font-family:var(--font-display);font-size:1.3rem">بُن الديوان</b></span>
-    <button class="cart-btn" data-close aria-label="إغلاق">✕</button>
+    <button class="cart-btn" data-close aria-label="إغلاق"><span class="ico" data-ico="close"></span></button>
   </div>
-  <p class="en" style="color:var(--gold)">AL DIWAN COFFEE</p>
+  <p class="en" style="color:var(--gold)">AL-DEWAN COFFEE</p>
   <a class="mlink" href="#home">الرئيسية <span>←</span></a>
   <a class="mlink" href="#story">الحكاية <span>←</span></a>
-  <a class="mlink" href="#shop">المنتجات <span>←</span></a>
+  <a class="mlink" href="#products">المنتجات <span>←</span></a>
   <a class="mlink" href="#our-story">قصتنا <span>←</span></a>
   <a class="mlink" href="#branches">الفروع <span>←</span></a>
   <a class="mlink" href="#contact">تواصل معنا <span>←</span></a>
-  <a href="#shop" class="btn btn-gold" style="justify-content:center;margin-top:14px">تسوق الآن — SHOP</a>
+  <a href="#products" class="btn btn-gold" style="justify-content:center;margin-top:14px">تسوق الآن — SHOP</a>
+  <div class="social-row" style="margin-top:auto">
+    <a href="https://www.instagram.com/aldewan.coffee.eg" target="_blank" rel="noopener" aria-label="انستجرام الديوان"><span class="ico" data-ico="instagram"></span><span>انستجرام</span></a>
+    <a href="https://www.facebook.com/AlDewan.Coffee/" target="_blank" rel="noopener" aria-label="فيسبوك الديوان"><span class="ico" data-ico="facebook"></span><span>فيسبوك</span></a>
+  </div>
 </aside>
 
 <!-- CART drawer -->
 <aside class="sheet right" id="cartSheet" aria-label="سلة التسوق">
   <div style="display:flex;justify-content:space-between;align-items:center">
-    <h3>🛒 سلة الديوان <span class="en" style="color:var(--gold)">CART</span></h3>
-    <button class="cart-btn" data-close aria-label="إغلاق السلة">✕</button>
+    <h3><span class="ico" data-ico="cart"></span> سلة الديوان <span class="en" style="color:var(--gold)">CART</span></h3>
+    <button class="cart-btn" data-close aria-label="إغلاق السلة"><span class="ico" data-ico="close"></span></button>
   </div>
   <div class="cart-items" id="cartItems"></div>
   <div class="cart-foot">
@@ -105,17 +113,18 @@
   <div class="crema" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <p class="eyebrow rv">AL DIWAN COFFEE • EST. FLAVOUR</p>
-      <h1 class="display rv">بُن <span class="gold">الديوان</span><br><span class="draw" id="heroDraw"><span class="ink">أصل القهوة</span><i class="pen"></i></span></h1>
-      <p class="lead rv">قهوة تُحضر بحكاية... وتُقدّم بأصالة. بن مصري فاخر، تحميص يومي، وطحن على الحجر — من حبة البن لحد فنجانك.</p>
+      <p class="eyebrow rv">بُن الديوان • AL-DEWAN COFFEE</p>
+      <h1 class="display rv">قهوة تُحضّر بحكاية...<br><span class="draw" id="heroDraw"><span class="ink">وتُقدّم بأصالة</span><i class="pen"></i></span></h1>
+      <p class="lead rv">جميع أنواع البن الفاخر، تحميص يومي، وطحن فوري — من حبة البن لحد فنجانك.</p>
       <div class="hero-cta rv">
-        <a href="#shop" class="btn btn-gold magnetic">اكتشف البن ←</a>
-        <a href="#shop" class="btn btn-ghost magnetic">تسوق الآن • SHOP</a>
+        <a href="#products" class="btn btn-gold magnetic">اكتشف البن ←</a>
+        <a href="#products" class="btn btn-ghost magnetic">تسوق الآن • SHOP</a>
       </div>
       <div class="hero-stats rv">
-        <div class="hstat"><b>+12k</b><span>فنجان سعيد شهريًا</span></div>
-        <div class="hstat"><b>23</b><span>صنف بن أصلي</span></div>
-        <div class="hstat"><b>2</b><span>فروع — شبين & منوف</span></div>
+        <div class="hstat"><b>+40K</b><span>فنجان سعيد شهريًا</span></div>
+        <div class="hstat"><b>23</b><span>صنف بن أصلي ونضيف</span></div>
+        <div class="hstat"><b>2</b><span>فروع — شبين & منوف & القاهرة قريبًا</span></div>
+        <div class="hstat"><b>15</b><span>سنة ولسه مكملين</span></div>
       </div>
     </div>
     <div class="hero-visual rv">
@@ -129,8 +138,8 @@
 </section>
 
 <div class="marquee" aria-hidden="true"><div class="marquee-track" id="mq">
-<span>بُن الديوان •</span><span>أصل القهوة •</span><span>AL DIWAN COFFEE •</span><span>تحميص يومي •</span><span>سادة • محوج • إكسترا •</span>
-<span>بُن الديوان •</span><span>أصل القهوة •</span><span>AL DIWAN COFFEE •</span><span>تحميص يومي •</span><span>سادة • محوج • إكسترا •</span>
+<span>بُن الديوان •</span><span>أصل القهوة •</span><span>AL-DEWAN COFFEE •</span><span>تحميص يومي •</span><span>سادة • محوج • إكسترا •</span>
+<span>بُن الديوان •</span><span>أصل القهوة •</span><span>AL-DEWAN COFFEE •</span><span>تحميص يومي •</span><span>سادة • محوج • إكسترا •</span>
 </div></div>
 
 <!-- ============ SCROLL STORY 01–05 ============ -->
@@ -159,24 +168,36 @@
   </div>
 </section>
 
+<!-- ============ PRODUCT GRID (PRIMARY SHOP) ============ -->
+<section id="products">
+  <div class="wrap">
+    <div class="center rv"><img src="assets/logo-full.png" alt="شعار بُن الديوان" class="seal"><span class="kicker">المنيو الكامل — SHOP COFFEE</span>
+      <h2 class="display" style="font-size:clamp(2rem,5vw,3.2rem)">تسوق <span class="gold">البن</span></h2>
+      <p class="lead">الأسعار لكل ربع كيلو، ومتاح 250جم / 500جم / 1كجم. اضغط «إضافة» أو افتح «عرض سريع» للتفاصيل والأنواع.</p></div>
+    <div class="grid" id="productGrid"></div>
+  </div>
+</section>
+
 <!-- ============ PRODUCT EXPERIENCE / CONFIGURATOR ============ -->
 <section id="shop">
   <div class="wrap">
     <div class="center rv"><span class="kicker">تجربة المنتج — 3D PRODUCT STORYTELLING</span>
       <h2 class="display" style="font-size:clamp(2rem,5vw,3.4rem)">اختار <span class="gold">خلطتك</span></h2>
-      <p class="lead">اختار الصنف ثم النوع: سادة أو محوج — والسعر بيتحدث لحظيًا (لكل ربع كيلو).</p></div>
+      <p class="lead">اختار الصنف، بعدها النوع (سادة / محوج)، وبعدها الوزن — والسعر بيتحدّث لحظيًا.</p></div>
     <div class="config">
       <div class="glass config-visual rv">
         <div class="img-ph dome-reveal" id="cfgSlot" data-slot="7"><span>7</span><small>صورة المنتج المختار</small></div>
       </div>
       <div class="glass config-body rv">
-        <span class="en" style="color:var(--gold)">AL DIWAN • CONFIGURE</span>
+        <span class="en" style="color:var(--gold)">AL-DEWAN • CONFIGURE</span>
         <h3 id="cfgName" style="font-size:2rem;margin:6px 0">الديوان السادة</h3>
         <p class="lead" id="cfgDesc" style="font-size:.98rem">خلطة الديوان الأساسية — طحنة تركي متوازنة ومرارة هادية.</p>
         <b style="font-size:.85rem;color:var(--gold)">الصنف • COFFEE</b>
         <div class="opt-row" id="cfgBlends"></div>
         <b style="font-size:.85rem;color:var(--gold)">النوع • سادة / محوج</b>
         <div class="opt-row" id="cfgWeights"></div>
+        <b style="font-size:.85rem;color:var(--gold)">الوزن • SIZE</b>
+        <div class="opt-row" id="cfgSizes"></div>
         <div class="meta-grid">
           <div><b id="cfgRoast">وسط</b><span>التحميص</span></div>
           <div><b id="cfgGrind">تركي ناعم</b><span>الطحنة</span></div>
@@ -187,27 +208,10 @@
           <div class="stepper"><button id="qMinus" aria-label="إنقاص">−</button><b id="qVal">1</b><button id="qPlus" aria-label="زيادة">+</button></div>
           <button class="btn btn-gold magnetic" id="cfgAdd" style="flex:1;justify-content:center">+ إضافة للسلة</button>
         </div>
-        <button class="btn btn-ghost btn-sm" id="cfgView" style="width:100%;justify-content:center">👁 عرض سريع — QUICK VIEW</button>
+        <button class="btn btn-ghost btn-sm" id="cfgView" style="width:100%;justify-content:center">عرض سريع — QUICK VIEW</button>
       </div>
     </div>
   </div>
-</section>
-
-<!-- ============ ROAST EXPERIENCE ============ -->
-<section id="roast" data-roast="medium">
-  <div class="wrap center rv"><span class="kicker">درجة التحميص — ROAST LAB</span>
-    <h2 class="display" style="font-size:clamp(2rem,5vw,3.2rem)">فاتح؟ وسط؟ <span class="gold">غامق؟</span></h2>
-    <p class="lead">دوّس على الدرجة — لون البيئة والإضاءة وإحساس المنتج هيتغيروا معاك بسلاسة.</p></div>
-  <div class="wrap roast-cards">
-    <div class="roast-card" data-r="light"><div class="roast-dot rd-light"></div><h3>فاتح • LIGHT</h3><p class="lead" style="font-size:.9rem">حموضة زاهية، نكهات عشبية وزهرية، كافيين أعلى إحساسًا.</p></div>
-    <div class="roast-card on" data-r="medium"><div class="roast-dot rd-medium"></div><h3>وسط • MEDIUM</h3><p class="lead" style="font-size:.9rem">التوازن الذهبي: حلاوة + قوام + وشّ تركي غني. اختيار الديوان.</p></div>
-    <div class="roast-card" data-r="dark"><div class="roast-dot rd-dark"></div><h3>غامق • DARK</h3><p class="lead" style="font-size:.9rem">شوكولاتة محمصة ودخان خفيف، مرارة عميقة لعشاق التقيل.</p></div>
-  </div>
-  <div class="wrap"><div class="glass radar-box rv">
-    <canvas id="radar" width="340" height="300" aria-label="خريطة النكهة"></canvas>
-    <p id="roastDesc">التوازن الذهبي: حلاوة + قوام + وشّ تركي غني. اختيار الديوان.</p>
-    <input type="range" id="roastRange" min="0" max="2" value="1" step="1" aria-label="درجة التحميص">
-  </div></div>
 </section>
 
 <!-- ============ QUIZ + BREW RITUAL ============ -->
@@ -238,27 +242,17 @@
   </div>
 </section>
 
-<!-- ============ PRODUCT GRID ============ -->
-<section id="products">
-  <div class="wrap">
-    <div class="center rv"><img src="assets/logo-full.png" alt="شعار بُن الديوان" class="seal"><span class="kicker">المنيو الكامل — SHOP COFFEE</span>
-      <h2 class="display" style="font-size:clamp(2rem,5vw,3.2rem)">تسوق <span class="gold">البن</span></h2>
-      <p class="lead">الأسعار شاملة الضريبة (لكل ربع كيلو). اضغط «إضافة» أو افتح «عرض سريع» للتفاصيل والأنواع.</p></div>
-    <div class="grid" id="productGrid"></div>
-  </div>
-</section>
-
 <!-- ============ BRAND STORY ============ -->
 <section id="our-story">
   <div class="wrap center rv"><span class="kicker">حكاية الديوان — HERITAGE</span>
     <h2 class="display" style="font-size:clamp(2rem,5vw,3.2rem)">مجلس... <span class="gold">وريحة بن</span></h2>
     <p class="lead">من قلب المنوفية: دلة نحاس، مشربية، رخام أخضر، وتحميصة بتتعمل بحب كل يوم.</p></div>
   <div class="wrap bento">
-    <figure class="b1 rv"><div class="img-ph" data-slot="16"><span>16</span><small>صورة قصتنا الكبيرة</small></div><figcaption>قصتنا</figcaption></figure>
-    <figure class="rv"><div class="img-ph" data-slot="17"><span>17</span><small>صورة قصتنا 2</small></div><figcaption>قصتنا 2</figcaption></figure>
-    <figure class="rv"><div class="img-ph" data-slot="18"><span>18</span><small>صورة قصتنا 3</small></div><figcaption>قصتنا 3</figcaption></figure>
-    <figure class="rv"><div class="img-ph" data-slot="19"><span>19</span><small>صورة قصتنا 4</small></div><figcaption>قصتنا 4</figcaption></figure>
-    <figure class="rv"><div class="img-ph" data-slot="20"><span>20</span><small>صورة قصتنا 5</small></div><figcaption>قصتنا 5</figcaption></figure>
+    <figure class="b1 rv"><div class="img-ph" data-slot="16"><span>16</span><small>مجلس الديوان — دلة نحاس وأجواء القهوة</small></div></figure>
+    <figure class="rv"><div class="img-ph" data-slot="17"><span>17</span><small>تفاصيل ركن القهوة في الديوان</small></div></figure>
+    <figure class="rv"><div class="img-ph" data-slot="18"><span>18</span><small>من أرجاء الديوان وأجوائه</small></div></figure>
+    <figure class="rv"><div class="img-ph" data-slot="19"><span>19</span><small>أكواب البن على طاولة الديوان</small></div></figure>
+    <figure class="rv"><div class="img-ph" data-slot="20"><span>20</span><small>لمحة من داخل الديوان</small></div></figure>
   </div>
 </section>
 
@@ -267,12 +261,12 @@
   <div class="wrap center rv"><span class="kicker">مجلس الديوان — المكان يحكي</span>
     <h2 class="display" style="font-size:clamp(2rem,5vw,3.2rem)">المكان <span class="gold">يحكي</span></h2>
     <p class="lead">اسحب أفقيًا — صور المكان بقناع مقوّس وبتتحرك مع السكرول بسلاسة.</p></div>
-  <div class="wrap council rv">
-    <figure class="council-card dome-reveal"><div class="img-ph" data-slot="11"><span>11</span><small>صورة المجلس 1</small></div><figcaption>مجلس 1</figcaption></figure>
-    <figure class="council-card dome-reveal"><div class="img-ph" data-slot="12"><span>12</span><small>صورة المجلس 2</small></div><figcaption>مجلس 2</figcaption></figure>
-    <figure class="council-card dome-reveal"><div class="img-ph" data-slot="13"><span>13</span><small>صورة المجلس 3</small></div><figcaption>مجلس 3</figcaption></figure>
-    <figure class="council-card dome-reveal"><div class="img-ph" data-slot="14"><span>14</span><small>صورة المجلس 4</small></div><figcaption>مجلس 4</figcaption></figure>
-    <figure class="council-card dome-reveal"><div class="img-ph" data-slot="15"><span>15</span><small>صورة المجلس 5</small></div><figcaption>مجلس 5</figcaption></figure>
+  <div class="wrap council rv" id="councilTrack" tabindex="0" role="region" aria-label="صور المكان — اسحب أفقيًا">
+    <figure class="council-card"><div class="img-ph" data-slot="11"><span>11</span><small>من أرجاء مجلس الديوان</small></div></figure>
+    <figure class="council-card"><div class="img-ph" data-slot="12"><span>12</span><small>دلة القهوة على الرخام</small></div></figure>
+    <figure class="council-card"><div class="img-ph" data-slot="13"><span>13</span><small>أكواب البن وأجواء الديوان</small></div></figure>
+    <figure class="council-card"><div class="img-ph" data-slot="14"><span>14</span><small>تفاصيل المكان في الديوان</small></div></figure>
+    <figure class="council-card"><div class="img-ph" data-slot="15"><span>15</span><small>ركن الجلوس في الديوان</small></div></figure>
   </div>
 </section>
 
@@ -280,8 +274,25 @@
 <section id="reviews">
   <div class="wrap center rv"><span class="kicker">آراء حقيقية — REVIEWS</span>
     <h2 class="display" style="font-size:clamp(2rem,5vw,3rem)">قالوا عن <span class="gold">الديوان</span></h2>
-    <p class="lead">قسم المراجعات مربوط على طبقة البيانات (data/reviews) — أي بطاقة هنا Placeholder واضح يُستبدل بتقييمات حقيقية من الـCMS لاحقًا.</p></div>
+    <p class="lead">آراء حقيقية من عملائنا على Google — بنستوردها رسميًا ومنعرضش أي تقييمات مختلقة.</p></div>
   <div class="wrap rev-grid" id="revGrid"></div>
+</section>
+
+<!-- ============ ROAST EXPERIENCE (LAB — lower on the page) ============ -->
+<section id="roast" data-roast="medium">
+  <div class="wrap center rv"><span class="kicker">درجة التحميص — ROAST LAB</span>
+    <h2 class="display" style="font-size:clamp(2rem,5vw,3.2rem)">فاتح؟ وسط؟ <span class="gold">غامق؟</span></h2>
+    <p class="lead">دوّس على الدرجة — لون البيئة والإضاءة وإحساس المنتج هيتغيروا معاك بسلاسة.</p></div>
+  <div class="wrap roast-cards">
+    <div class="roast-card" data-r="light"><div class="roast-dot rd-light"></div><h3>فاتح • LIGHT</h3><p class="lead" style="font-size:.9rem">حموضة زاهية، نكهات عشبية وزهرية، كافيين أعلى إحساسًا.</p></div>
+    <div class="roast-card on" data-r="medium"><div class="roast-dot rd-medium"></div><h3>وسط • MEDIUM</h3><p class="lead" style="font-size:.9rem">التوازن الذهبي: حلاوة + قوام + وشّ تركي غني. اختيار الديوان.</p></div>
+    <div class="roast-card" data-r="dark"><div class="roast-dot rd-dark"></div><h3>غامق • DARK</h3><p class="lead" style="font-size:.9rem">شوكولاتة محمصة ودخان خفيف، مرارة عميقة لعشاق التقيل.</p></div>
+  </div>
+  <div class="wrap"><div class="glass radar-box rv">
+    <canvas id="radar" width="340" height="300" aria-label="خريطة النكهة"></canvas>
+    <p id="roastDesc">التوازن الذهبي: حلاوة + قوام + وشّ تركي غني. اختيار الديوان.</p>
+    <input type="range" id="roastRange" min="0" max="2" value="1" step="1" aria-label="درجة التحميص">
+  </div></div>
 </section>
 
 <!-- ============ ORDER BAND ============ -->
@@ -309,23 +320,23 @@
     <div class="glass branch rv">
       <span class="en" style="color:var(--gold)">BRANCH 01 — SHEBIN</span>
       <h3>شبين الكوم</h3>
-      <div class="brow">📍<span>شارع صبري أبو علم، أمام بشاير الخير — المنوفية</span></div>
-      <div class="brow">🕘<span>يوميًا 9ص — 12م (الجمعة 4م — 12م)</span></div>
-      <div class="brow">📞<span dir="ltr">+20 100 000 0000</span></div>
+      <div class="brow"><span class="ico" data-ico="location"></span><span>شارع صبري أبو علم، أمام بشاير الخير — المنوفية</span></div>
+      <div class="brow"><span class="ico" data-ico="clock"></span><span>يوميًا 9ص — 12م (الجمعة 4م — 12م)</span></div>
+      <div class="brow"><span class="ico" data-ico="phone"></span><span dir="ltr">0102 859 3440</span></div>
       <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
         <a class="btn btn-gold btn-sm" target="_blank" rel="noopener" href="https://maps.app.goo.gl/nrsqjkosUBPTPEVaA">الاتجاهات ←</a>
-        <a class="btn btn-ghost btn-sm" href="#shop">اطلب دليفري</a>
+        <a class="btn btn-ghost btn-sm" href="#products">اطلب دليفري</a>
       </div>
     </div>
     <div class="glass branch rv">
       <span class="en" style="color:var(--gold)">BRANCH 02 — MENOUF</span>
       <h3>منوف</h3>
-      <div class="brow">📍<span>شارع بورسعيد، أمام بنزينة مصر — المنوفية</span></div>
-      <div class="brow">🕘<span>يوميًا 9ص — 12م</span></div>
-      <div class="brow">📞<span dir="ltr">+20 100 000 0000</span></div>
+      <div class="brow"><span class="ico" data-ico="location"></span><span>شارع بورسعيد، أمام بنزينة مصر — المنوفية</span></div>
+      <div class="brow"><span class="ico" data-ico="clock"></span><span>يوميًا 9ص — 12م</span></div>
+      <div class="brow"><span class="ico" data-ico="phone"></span><span dir="ltr">0102 859 3440</span></div>
       <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
         <a class="btn btn-gold btn-sm" target="_blank" rel="noopener" href="https://maps.app.goo.gl/nrsqjkosUBPTPEVaA">الاتجاهات ←</a>
-        <a class="btn btn-ghost btn-sm" href="#shop">اطلب دليفري</a>
+        <a class="btn btn-ghost btn-sm" href="#products">اطلب دليفري</a>
       </div>
     </div>
   </div>
@@ -336,29 +347,29 @@
   <div class="wrap fgrid">
     <div>
       <div class="brand" style="margin-bottom:12px"><span class="brand-mark"><img src="assets/logo.png" alt="بُن الديوان"></span>
-      <span><b style="font-family:var(--font-display)">بُن الديوان</b><small>AL DIWAN COFFEE</small></span></div>
-      <p class="lead" style="font-size:.92rem">«أصل القهوة» — بن مصري فاخر بتحميص يومي. Traditional × Modern × Cinematic.</p>
+      <span><b style="font-family:var(--font-display)">بُن الديوان</b><small>AL-DEWAN COFFEE</small></span></div>
+      <p class="lead" style="font-size:.92rem">«أصل القهوة» — بن مصري فاخر بتحميص يومي وطحن فوري.</p>
       <div class="social-row">
         <a href="https://www.instagram.com/aldewan.coffee.eg" target="_blank" rel="noopener" aria-label="انستجرام الديوان"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor" stroke="none"/></svg><span>انستجرام</span></a>
         <a href="https://www.facebook.com/AlDewan.Coffee/" target="_blank" rel="noopener" aria-label="فيسبوك الديوان"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 8.5h2.5V5.5H14c-2 0-3.5 1.5-3.5 3.5v2H8v3h2.5v6.5h3V15H16l.8-3h-3.3V9c0-.3.2-.5.5-.5Z"/></svg><span>فيسبوك</span></a>
       </div>
     </div>
-    <div><h4>تسوق</h4><a href="#shop">الديوان السادة</a><a href="#shop">الديوان محوج</a><a href="#shop">الديوان إكسترا</a><a href="#shop">يمني فاخر</a></div>
+    <div><h4>تسوق</h4><a href="#products">الديوان السادة</a><a href="#products">الديوان محوج</a><a href="#products">الديوان إكسترا</a><a href="#products">يمني فاخر</a></div>
     <div><h4>الديوان</h4><a href="#story">الحكاية</a><a href="#our-story">قصتنا</a><a href="#branches">الفروع</a><a href="#reviews">الآراء</a></div>
     <div><h4>وصلك الجديد أول بأول</h4>
       <p style="color:#c9bfa4;font-size:.9rem">خصم 15% على أول أوردر للمشتركين.</p>
       <form class="news" id="newsForm"><input id="newsMail" type="email" required placeholder="بريدك الإلكتروني"><button class="btn btn-gold btn-sm" type="submit">اشترك</button></form>
-      <small style="color:var(--muted)">تواصل: hello@aldiwan.coffee • شبين & منوف</small>
+      <small style="color:var(--muted)">تواصل: AlDewan.coffee@gmail.com • شبين الكوم & منوف</small>
     </div>
   </div>
-  <div class="wrap copy"><span>© 2026 Al Diwan Coffee — بُن الديوان. جميع الحقوق محفوظة.</span><span class="en">COMMERCE FIRST • EXPERIENCE SECOND</span></div>
+  <div class="wrap copy"><span>© 2026 Al-Dewan Coffee — بُن الديوان. جميع الحقوق محفوظة.</span><span class="en">AL-DEWAN COFFEE</span></div>
 </footer>
 </main>
 
 <!-- QUICK VIEW modal -->
 <div class="modal" id="qvModal" role="dialog" aria-modal="true" aria-label="عرض سريع">
   <div class="modal-box light">
-    <button class="x" data-close>✕</button>
+    <button class="x" data-close><span class="ico" data-ico="close"></span></button>
     <div class="qv-grid">
       <div class="img-ph" id="qvSlot" data-slot="7"><span>7</span><small>صورة المنتج</small></div>
       <div>
@@ -366,13 +377,16 @@
         <h3 id="qvName" style="font-size:1.8rem;margin:6px 0">الديوان السادة</h3>
         <div class="stars">★★★★★ <small style="color:#8a7c55">(تقييمات حقيقية تُربط لاحقًا)</small></div>
         <p class="lead" id="qvDesc" style="color:#5c5138;font-size:.95rem"></p>
+        <b style="font-size:.82rem;color:var(--gold-deep)">النوع • سادة / محوج</b>
         <div class="opt-row" id="qvWeights"></div>
+        <b style="font-size:.82rem;color:var(--gold-deep)">الوزن • SIZE</b>
+        <div class="opt-row" id="qvSizes"></div>
         <div class="price-line"><span class="price-now" id="qvPrice" style="color:#2b1a0e">180 EGP</span></div>
         <div style="display:flex;gap:10px">
           <button class="btn btn-gold" id="qvAdd" style="flex:1;justify-content:center">+ أضف للسلة</button>
         </div>
         <ul style="color:#6b5f45;font-size:.88rem;line-height:2;padding-right:18px">
-          <li>الأصل: بن أرابيكا مختار بعناية</li><li>التحميص: <span id="qvRoast">وسط</span> — الطحنة: تركي ناعم</li><li>الشحن: شبين & منوف + شحن محافظات</li>
+          <li>الأصل: بن أرابيكا مختار بعناية</li><li>التحميص: <span id="qvRoast">وسط</span> — الطحنة: تركي ناعم</li><li>التوصيل: فروع شبين الكوم ومنوف + شحن لمحافظات الدلتا</li>
         </ul>
       </div>
     </div>
@@ -382,7 +396,7 @@
 <!-- CHECKOUT modal : steps pattern -->
 <div class="modal" id="coModal" role="dialog" aria-modal="true" aria-label="إتمام الطلب">
   <div class="modal-box">
-    <button class="x" data-close>✕</button>
+    <button class="x" data-close><span class="ico" data-ico="close"></span></button>
     <span class="en" style="color:var(--gold)">CHECKOUT — الدفع عند الاستلام</span>
     <h3 style="font-size:1.7rem;margin:4px 0">إتمام الطلب</h3>
     <div class="steps"><span class="on" data-s="1">1 السلة</span><span data-s="2">2 التوصيل</span><span data-s="3">3 التأكيد</span></div>
@@ -394,8 +408,8 @@
 
 <!-- mobile bottom bar : thumb-friendly commerce -->
 <div id="mobilebar">
-  <button class="btn btn-ghost" id="mCart">🛒 السلة (<span id="mCount">0</span>)</button>
-  <a class="btn btn-gold" href="#shop">تسوق الآن</a>
+  <button class="btn btn-ghost" id="mCart"><span class="ico" data-ico="cart"></span> السلة (<span id="mCount">0</span>)</button>
+  <a class="btn btn-gold" href="#products">تسوق الآن</a>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة الأدمن — بُن الديوان</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="login-page" id="loginPage">
+    <div class="login-card">
+      <img src="../assets/logo.png" alt="بُن الديوان" class="login-logo">
+      <h1>لوحة الأدمن</h1>
+      <form id="loginForm">
+        <div class="field">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="loginEmail" required>
+        </div>
+        <div class="field">
+          <label>كلمة المرور</label>
+          <input type="password" id="loginPassword" required>
+        </div>
+        <button type="submit" class="btn btn-gold" id="loginBtn">تسجيل الدخول</button>
+        <p class="login-error" id="loginError"></p>
+      </form>
+    </div>
+  </div>
+
+  <div class="admin-app" id="adminApp" style="display:none">
+    <header class="admin-header">
+      <div class="admin-brand">
+        <img src="../assets/logo.png" alt="الديوان" class="admin-logo">
+        <b>لوحة الأدمن</b>
+      </div>
+      <div class="admin-user">
+        <span id="adminEmail"></span>
+        <button class="btn btn-ghost btn-sm" id="logoutBtn">خروج</button>
+      </div>
+    </header>
+
+    <div class="admin-filters">
+      <button class="chip-opt active" data-status="">الكل</button>
+      <button class="chip-opt" data-status="pending_confirmation">قيد التأكيد</button>
+      <button class="chip-opt" data-status="confirmed">مؤكد</button>
+      <button class="chip-opt" data-status="preparing">جاري التحضير</button>
+      <button class="chip-opt" data-status="out_for_delivery">خارج للتوصيل</button>
+      <button class="chip-opt" data-status="delivered">تم التوصيل</button>
+      <button class="chip-opt" data-status="cancelled">ملغي</button>
+    </div>
+
+    <div class="admin-content">
+      <div class="orders-list" id="ordersList"></div>
+      <div class="order-detail" id="orderDetail" style="display:none"></div>
+    </div>
+  </div>
+
+  <div id="toasts"></div>
+  <script src="admin.js"></script>
+</body>
+</html>
