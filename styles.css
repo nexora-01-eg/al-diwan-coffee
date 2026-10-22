@@ -500,7 +500,7 @@ main{position:relative;z-index:1}
 #roast[data-roast="light"]{background:radial-gradient(80% 60% at 50% 20%,rgba(58,42,22,.72),rgba(14,8,5,.88))}
 #roast[data-roast="medium"]{background:radial-gradient(80% 60% at 50% 20%,rgba(74,44,18,.68),rgba(14,8,5,.88))}
 #roast[data-roast="dark"]{background:radial-gradient(80% 60% at 50% 20%,rgba(28,15,8,.78),rgba(3,6,5,.90))}
-#ritual{background:linear-gradient(180deg,rgba(14,8,5,.86),rgba(14,8,5,.72)),url('assets/sec-hero.png') center 50%/cover no-repeat,rgba(14,8,5,.55)}
+#ritual{background:linear-gradient(180deg,rgba(14,8,5,.86),rgba(14,8,5,.72)),url('assets/sec-hero.webp') center 50%/cover no-repeat,rgba(14,8,5,.55)}
 #council{background:transparent}
 #our-story{background:linear-gradient(180deg,rgba(14,8,5,.88),rgba(43,26,14,.80))}
 #reviews{background:rgba(14,8,5,.90)}

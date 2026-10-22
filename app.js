@@ -487,50 +487,102 @@ window.openQV=openQV;
 $('#qvAdd').onclick=()=>{addToCart(qv.pid,qv.vi,1,qv.size);closeAll();setTimeout(()=>openSheet('#cartSheet'),150);};
 
 /* ---------- 11) CHECKOUT (steps) ---------- */
-let coStep=1,ship={};
+let coStep=1,ship={},coSubmitting=false;
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 $('#goCheckout').onclick=()=>{if(!cart.length){toast('سلتك فاضية — اختار خلطتك الأول');return;}
- closeAll();coStep=1;renderCO();$('#coModal').classList.add('show');scrim.classList.add('show');};
+ closeAll();coStep=1;coSubmitting=false;renderCO();$('#coModal').classList.add('show');scrim.classList.add('show');};
 const cartTotal=()=>cart.reduce((s,i)=>s+lineOf(i).total,0);
 const shipLine=t=>t>=400?'شحن مجاني داخل محافظات الدلتا':'الشحن يُحدّد عند التأكيد (محافظات الدلتا)';
 function renderCO(){$$('#coModal .steps span').forEach(s=>s.classList.toggle('on',+s.dataset.s===coStep));
  const total=cartTotal();
  if(coStep===1)$('#coBody').innerHTML=`${cart.map(i=>{const {p,v,s,total:tt}=lineOf(i);
-  return `<div class="brow"><span class="ico" data-ico="cart"></span><span><b>${p.name} ${v.label}</b> (${s.label}) × ${i.qty} — <b>${tt} EGP</b></span></div>`;}).join('')}
-  <div class="total-row"><span>المجموع — ${shipLine(total)}</span><span>${total} EGP</span></div>
+  return `<div class="brow"><span class="ico" data-ico="cart"></span><span><b>${esc(p.name)} ${esc(v.label)}</b> (${esc(s.label)}) × ${i.qty} — <b>${tt} EGP</b></span></div>`;}).join('')}
+  <div class="total-row"><span>المجموع — ${esc(shipLine(total))}</span><span>${total} EGP</span></div>
   <button class="btn btn-gold" style="width:100%;justify-content:center" onclick="coGo(2)">التالي: بيانات التوصيل ←</button>
   <small style="color:var(--muted)">شحن مجاني داخل الدلتا فوق 400 EGP • الدفع كاش عند الاستلام</small>`;
- if(coStep===2)$('#coBody').innerHTML=`<form id="shipF">
-  <div class="field"><label>الاسم بالكامل</label><input required id="fName" placeholder="مثال: أحمد الديواني"></div>
-  <div class="field"><label>الموبايل</label><input required id="fPhone" inputmode="tel" pattern="[0-9+ ]{8,15}" placeholder="01xxxxxxxxx"></div>
-  <div class="field"><label>المحافظة / المدينة</label><select id="fCity"><option>شبين الكوم</option><option>منوف</option><option>طنطا</option><option>المنصورة</option><option>دمنهور</option><option>الزقازيق</option><option>بنها</option><option>كفر الشيخ</option><option>دمياط</option><option>المحلة الكبرى</option><option>أخرى (خارج الدلتا)</option></select></div>
-  <div class="field"><label>العنوان</label><input required id="fAddr" placeholder="شارع / علامة مميزة"></div>
-  <div class="field"><label>ملاحظات (الطحنة / التحويجة)</label><input id="fNote" placeholder="اختياري"></div>
-  <div style="display:flex;gap:10px"><button type="button" class="btn btn-ghost" onclick="coGo(1)">→ رجوع</button>
+ if(coStep===2)$('#coBody').innerHTML=`<form id="shipF" novalidate>
+  <div class="field"><label for="fName">الاسم بالكامل</label><input required id="fName" name="name" autocomplete="name" placeholder="مثال: أحمد الديواني"></div>
+  <div class="field"><label for="fPhone">الموبايل (مصري — 11 رقم)</label><input required id="fPhone" name="phone" inputmode="numeric" pattern="01[0-9]{9}" title="مثال: 01028593440" placeholder="01xxxxxxxxx"></div>
+  <div class="field"><label for="fCity">المحافظة / المدينة</label><select id="fCity" name="city"><option>شبين الكوم</option><option>منوف</option><option>طنطا</option><option>المنصورة</option><option>دمنهور</option><option>الزقازيق</option><option>بنها</option><option>كفر الشيخ</option><option>دمياط</option><option>المحلة الكبرى</option><option>أخرى (خارج الدلتا)</option></select></div>
+  <div class="field"><label for="fAddr">العنوان</label><input required id="fAddr" name="address" autocomplete="street-address" placeholder="شارع / عمارة / علامة مميزة"></div>
+  <div class="field"><label for="fNote">ملاحظات (الطحنة / التحويجة)</label><input id="fNote" name="note" placeholder="اختياري"></div>
+  <div id="coErr" style="display:none;color:#ff8b8b;font-size:.85rem"></div>
+  <div style="display:flex;gap:10px;margin-top:10px"><button type="button" class="btn btn-ghost" onclick="coGo(1)">→ رجوع</button>
   <button class="btn btn-gold" style="flex:1;justify-content:center">مراجعة الطلب ←</button></div></form>`;
  if(coStep===2)setTimeout(()=>{const f=$('#shipF');if(f)f.onsubmit=e=>{e.preventDefault();
-  ship={name:$('#fName').value,phone:$('#fPhone').value,city:$('#fCity').value,addr:$('#fAddr').value,note:$('#fNote').value};coGo(3);};},50);
- if(coStep===3)$('#coBody').innerHTML=`<div class="brow"><span class="ico" data-ico="location"></span><span>${ship.name} — <span dir="ltr">${ship.phone}</span></span></div>
-  <div class="brow"><span class="ico" data-ico="location"></span><span>${ship.city} — ${ship.addr}</span></div>
-  <div class="brow"><span class="ico" data-ico="cash"></span><span>الدفع عند الاستلام — المجموع <b>${total} EGP</b> • ${shipLine(total)}</span></div>
+  const name=($('#fName')?$('#fName').value:'').trim();
+  const phone=($('#fPhone')?$('#fPhone').value:'').replace(/[\s-]/g,'');
+  const city=($('#fCity')?$('#fCity').value:'');
+  const addr=($('#fAddr')?$('#fAddr').value:'').trim();
+  const note=($('#fNote')?$('#fNote').value:'').trim();
+  const err=$('#coErr');
+  const fail=m=>{if(err){err.textContent=m;err.style.display='block';}return false;};
+  if(name.length<3){$('#fName').focus();return fail('اكتب اسمك بالكامل (٣ أحرف على الأقل).');}
+  if(!/^01[0-9]{9}$/.test(phone)&&!/^\+20 1[0-9]{9}$/.test(phone)){$('#fPhone').focus();return fail('اكتب رقم موبايل مصري صحيح — 11 رقم يبدأ بـ 01.');}
+  if(addr.length<6){$('#fAddr').focus();return fail('اكتب عنوان التوصيل بالتفصيل.');}
+  if(err){err.textContent='';err.style.display='none';}
+  ship={name,phone,city,addr,note};coGo(3);};},50);
+ if(coStep===3)$('#coBody').innerHTML=`<div class="brow"><span class="ico" data-ico="location"></span><span>${esc(ship.name)} — <span dir="ltr">${esc(ship.phone)}</span></span></div>
+  <div class="brow"><span class="ico" data-ico="location"></span><span>${esc(ship.city)} — ${esc(ship.addr)}</span></div>
+  ${ship.note?`<div class="brow"><span class="ico" data-ico="clock"></span><span>ملاحظات: ${esc(ship.note)}</span></div>`:''}
+  <div class="brow"><span class="ico" data-ico="cash"></span><span>الدفع عند الاستلام — المجموع <b>${total} EGP</b> • ${esc(shipLine(total))}</span></div>
   <div style="display:flex;gap:10px;margin-top:14px"><button class="btn btn-ghost" onclick="coGo(2)">→ تعديل</button>
-  <button class="btn btn-gold" style="flex:1;justify-content:center" onclick="placeOrder(${total})">تأكيد الطلب</button></div>`;
+  <button class="btn btn-gold" style="flex:1;justify-content:center" id="coPlace" onclick="placeOrder(${total})">تأكيد الطلب</button></div>`;
+ if(coStep===4)$('#coBody').innerHTML=coSubmittingLatestHtml||'';
  mountIcons($('#coBody'));}
 window.coGo=n=>{coStep=n;renderCO();};
-window.placeOrder=total=>{const ord={no:'DW-'+Date.now().toString().slice(-6),items:cart,total,ship,at:new Date().toISOString()};
+function orderText(ord){
+ const L=['طلب جديد من موقع بن الديوان','رقم: '+ord.no,'—',''];
+ (ord.items||[]).forEach(i=>L.push(`• ${i.name} — ${i.qty} × ${i.label} (${i.unit} EGP) = ${i.total} EGP`));
+ L.push('—','المجموع: '+ord.total+' EGP',ord.shipLine?ord.shipLine:'','—','الاسم: '+ord.ship.name);
+ L.push('الموبايل: '+ord.ship.phone);
+ L.push('المدينة: '+ord.ship.city);
+ L.push('العنوان: '+ord.ship.addr);
+ if(ord.ship.note)L.push('ملاحظات: '+ord.ship.note);
+ L.push('—','الدفع: كاش عند الاستلام');
+ return L.filter(x=>x!==undefined).join('\n').replace(/\n—\n—/,'\n—');
+}
+window.placeOrder=total=>{
+ if(coSubmitting)return; // double-click guard
+ coSubmitting=true;
+ const btn=$('#coPlace');if(btn){btn.disabled=true;btn.style.opacity=.6;btn.textContent='جاري التسجيل…';}
+ const no='DW-'+Math.floor(Date.now()/1000).toString(36).toUpperCase().slice(-5)+('-'+Math.random().toString(36).slice(2,5).toUpperCase());
+ const t=total;
+ const displayItems=cart.map(i=>{const {p,v,s,total:tt,unit}=lineOf(i);return {name:p.name+' — '+v.label,label:s.label,qty:i.qty,unit,total:tt};});
+ const ord={no,items:displayItems,total:t,ship,shipLine:shipLine(t),at:new Date().toISOString(),status:'جديد'};
+ // Fallback brief items snapshot (product data integrity at read time)
+ try{ord.rawItems=cart.map(i=>({pid:i.pid,vi:i.vi,size:i.size,qty:i.qty}));}catch(e){}
+ // 1) Save locally (always — never lose the order)
  try{const all=JSON.parse(localStorage.getItem('aldiwan_orders_v1'))||[];all.push(ord);
- localStorage.setItem('aldiwan_orders_v1',JSON.stringify(all));}catch(e){}
- cart=[];store.set(cart);$('#coBody').innerHTML=`<div class="center" style="padding:20px">
-  <div style="color:var(--gold);width:56px;margin:0 auto 6px" data-ico="check"></div><h3>طلبك اتسجل يا ${ship.name.split(' ')[0]||'بطل'}!</h3>
-  <p class="lead">رقم الطلب <b dir="ltr">${ord.no}</b> — هنتصل بيك للتأكيد، والبن هيوصلك مطحون طازج.</p>
-  <button class="btn btn-gold" onclick="closeAll()" style="justify-content:center">تمام — رجوع للمتجر</button></div>`;mountIcons($('#coBody'));};
+  localStorage.setItem('aldiwan_orders_v1',JSON.stringify(all));ord._savedLocal=true;}catch(e){}
+ // 2) Best-effort delivery to a configured backend (timeout 4s, non-blocking to UI)
+ let serverOk=false,serverErr=null;
+ const apiBase=(window.DIWAN&&window.DIWAN.apiBase)||'';
+ const tryServer=apiBase?fetch(apiBase.replace(/\/$/,'')+'/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(ord),signal:AbortSignal.timeout?AbortSignal.timeout(4000):(new Promise(r=>setTimeout(()=>r(new Error('timeout')),4000))).signal}).then(r=>serverOk=r.ok).catch(e=>{serverErr=e.message;}):Promise.resolve();
+ // 3) Honest confirmation screen — the business is notified when the WhatsApp message is SENT, not before
+ const finish=()=>{coSubmitting=false;cart=[];store.set(cart);renderCart();
+  coSubmittingLatestHtml=`<div class="center" style="padding:20px">
+  <div style="color:var(--gold);width:56px;margin:0 auto 6px" data-ico="check"></div>
+  <h3>تم تسجيل طلبك يا ${esc(ship.name.split(' ')[0]||'بطل')}</h3>
+  <p class="lead">رقم الطلب <b dir="ltr">${ord.no}</b> — المجموع <b>${ord.total} EGP</b> (الدفع كاش عند الاستلام).</p>
+  <p class="lead" style="font-size:.9rem">آخر خطوة مهمة: ابعت ملخص الطلب للبراند على واتساب للتأكيد النهائي. فتح واتساب لا يعني إن البراند استلم الطلب — لازم تضغط إرسال.</p>
+  <a class="btn btn-gold" style="justify-content:center;color:#063c2b" href="https://wa.me/${(window.DIWAN&&window.DIWAN.site&&window.DIWAN.site.whatsapp)||'201028593440'}?text=${encodeURIComponent(orderText(ord))}" target="_blank" rel="noopener" onclick="toast('افتح واتساب واضغط إرسال لتأكيد وصول الطلب للديوان')">
+   <span>إرسال الطلب واتساب للبراند</span></a>
+  <p style="margin-top:10px;color:var(--muted);font-size:.85rem">هنتصل بيك على ${esc(ship.phone)} لتأكيد التوصيل.</p>
+  <button class="btn btn-ghost" onclick="closeAll()" style="justify-content:center;margin-top:12px">غالى — رجوع للمتجر</button></div>`;
+  coStep=4;renderCO();};
+ if(window.DIWAN&&window.DIWAN.apiBase){tryServer.finally?tryServer.finally(finish):(tryServer.then(finish),tryServer.catch(finish));}else setTimeout(finish,150);
+};
+let coSubmittingLatestHtml='';
 
 /* ---------- 12) MISC ---------- */
 function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;
  $('#toasts').appendChild(t);setTimeout(()=>{t.style.opacity=0;setTimeout(()=>t.remove(),400);},2600);}
 window.toast=toast;
 $('#newsForm').onsubmit=e=>{e.preventDefault();const v=$('#newsMail').value;
- try{localStorage.setItem('aldiwan_news',v);}catch(err){}
- toast('اتسجلت ✓ كود خصمك: DIWAN15');e.target.reset();};
+ try{const list=JSON.parse(localStorage.getItem('aldiwan_news_list')||'[]');
+  if(!list.includes(v))list.push(v);localStorage.setItem('aldiwan_news_list',JSON.stringify(list));}catch(err){}
+ toast('اتسجل بريدك ✓ — هنبلغك بالعروض الحقيقية أول ما تنزل');e.target.reset();};
 
 /* ---------- 13) CINEMATIC DYNAMIC LIGHTING + EXTRA MOTION ---------- */
 (()=>{if(reduced)return;
