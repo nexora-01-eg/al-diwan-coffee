@@ -122,24 +122,35 @@ const SLOT_IMGS={
 function bindSlotImgs(){$$('.img-ph[data-slot]').forEach(el=>{const src=SLOT_IMGS[el.dataset.slot];if(src){const desc=el.querySelector('small')?.textContent||'';setPhImg(el,src,el.dataset.slot,desc);}});}
 /* حقن صور سيكشن الحكاية مباشرة */
 (function(){
-  const els = document.querySelectorAll('#story .story-media .scene-ph');
+  const els = document.querySelectorAll('#story .story-media .scene-ph, .story-media .img-ph.scene-ph');
   if(!els.length) return;
   els.forEach((el, i) => {
-    if(el.querySelector('picture') || el.querySelector('img')) return;
+    let pic = el.querySelector('picture');
+    if(!pic){
+      pic = document.createElement('picture');
+      el.insertBefore(pic, el.firstChild);
+    }
+    let webp = pic.querySelector('source[type="image/webp"]');
+    if(!webp){
+      webp = document.createElement('source');
+      webp.type = 'image/webp';
+      pic.appendChild(webp);
+    }
     const n = i + 1;
-    const pic = document.createElement('picture');
-    const webp = document.createElement('source');
-    webp.type = 'image/webp';
-    webp.srcset = 'assets/story/s' + n + '.webp';
-    const jpg = document.createElement('img');
-    jpg.src = 'assets/story/s' + n + '.jpg';
-    jpg.alt = 'مشهد قصة الديوان ' + n;
-    jpg.loading = (i === 0) ? 'eager' : 'lazy';
-    jpg.decoding = 'async';
-    pic.appendChild(webp);
-    pic.appendChild(jpg);
-    el.appendChild(pic);
+    webp.setAttribute('srcset', 'assets/story/s' + n + '.webp');
+    let img = pic.querySelector('img');
+    if(!img){
+      img = document.createElement('img');
+      pic.appendChild(img);
+    }
+    img.alt = 'مشهد قصة الديوان ' + n;
+    img.loading = (i === 0) ? 'eager' : 'lazy';
+    img.decoding = 'async';
+    if(img.getAttribute('src') !== 'assets/story/s' + n + '.jpg'){
+      img.setAttribute('src', 'assets/story/s' + n + '.jpg');
+    }
     el.classList.add('has-img');
+    el.classList.remove('noimg');
   });
 })();
 
