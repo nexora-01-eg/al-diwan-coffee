@@ -99,8 +99,9 @@ function setPhImg(el,src,label,desc){
   if(!pic){pic=document.createElement('picture');const im=document.createElement('img');im.loading='lazy';im.decoding='async';im.alt='';pic.appendChild(im);el.insertBefore(pic,el.firstChild);}
   const im=pic.querySelector('img');
   const so=pic.querySelector('source[type="image/webp"]');
-  if(/\.(jpe?g|png)$/i.test(src)){
-    const webp=src.replace(/\.(jpe?g|png)$/i,'.webp');
+  const m=src.match(/^(.*\.(?:jpe?g|png))(\?.*)?$/i);
+  if(m){
+    const webp=(m[1].replace(/\.(jpe?g|png)$/i,'.webp'))+(m[2]||'');
     let s=so;if(!s){s=document.createElement('source');s.type='image/webp';pic.insertBefore(s,im);}
     if(s.getAttribute('srcset')!==webp)s.setAttribute('srcset',webp);
   }else if(so){so.remove();}
@@ -112,13 +113,13 @@ function setPhImg(el,src,label,desc){
 /* صور المكان + القصة المحدّثة:
    1 فنجان الهيرو | 2-6 مشاهد القصة (أصل→تحميص→خلطة→فنجان→منتج) | 11-15 المجلس | 16-20 حكاية الديوان | 21 بانر الباند */
 const SLOT_IMGS={
- 1:'assets/hero-cup.jpg',
- 2:'assets/story/s1.jpg',3:'assets/story/s2.jpg',4:'assets/story/s3.jpg',5:'assets/story/s4.jpg',6:'assets/story/s5.jpg',
- 11:'assets/gallery/g09.jpg',12:'assets/gallery/g10.jpg',13:'assets/gallery/g11.jpg',
- 14:'assets/gallery/g14.jpg',15:'assets/gallery/g08.jpg',
- 16:'assets/gallery/g05.jpg',17:'assets/gallery/g02.jpg',18:'assets/gallery/g07.jpg',
- 19:'assets/gallery/g13.jpg',20:'assets/gallery/g06.jpg',
- 21:'assets/gallery/g01.jpg'};
+ 1:'assets/hero-cup.jpg?v=7',
+ 2:'assets/story/s1.jpg?v=7',3:'assets/story/s2.jpg?v=7',4:'assets/story/s3.jpg?v=7',5:'assets/story/s4.jpg?v=7',6:'assets/story/s5.jpg?v=7',
+ 11:'assets/gallery/g09.jpg?v=7',12:'assets/gallery/g10.jpg?v=7',13:'assets/gallery/g11.jpg?v=7',
+ 14:'assets/gallery/g14.jpg?v=7',15:'assets/gallery/g08.jpg?v=7',
+ 16:'assets/gallery/g05.jpg?v=7',17:'assets/gallery/g02.jpg?v=7',18:'assets/gallery/g07.jpg?v=7',
+ 19:'assets/gallery/g13.jpg?v=7',20:'assets/gallery/g06.jpg?v=7',
+ 21:'assets/gallery/g01.jpg?v=7'};
 function bindSlotImgs(){$$('.img-ph[data-slot]').forEach(el=>{const src=SLOT_IMGS[el.dataset.slot];if(src){const desc=el.querySelector('small')?.textContent||'';setPhImg(el,src,el.dataset.slot,desc);}});}
 /* حقن صور سيكشن الحكاية مباشرة */
 (function(){
@@ -136,8 +137,8 @@ function bindSlotImgs(){$$('.img-ph[data-slot]').forEach(el=>{const src=SLOT_IMG
       webp.type = 'image/webp';
       pic.appendChild(webp);
     }
-    const n = i + 1;
-    webp.setAttribute('srcset', 'assets/story/s' + n + '.webp');
+    const n = i + 1, V = '?v=7';
+    webp.setAttribute('srcset', 'assets/story/s' + n + '.webp' + V);
     let img = pic.querySelector('img');
     if(!img){
       img = document.createElement('img');
@@ -146,8 +147,8 @@ function bindSlotImgs(){$$('.img-ph[data-slot]').forEach(el=>{const src=SLOT_IMG
     img.alt = 'مشهد قصة الديوان ' + n;
     img.loading = (i === 0) ? 'eager' : 'lazy';
     img.decoding = 'async';
-    if(img.getAttribute('src') !== 'assets/story/s' + n + '.jpg'){
-      img.setAttribute('src', 'assets/story/s' + n + '.jpg');
+    if(img.getAttribute('src') !== 'assets/story/s' + n + '.jpg' + V){
+      img.setAttribute('src', 'assets/story/s' + n + '.jpg' + V);
     }
     el.classList.add('has-img');
     el.classList.remove('noimg');
