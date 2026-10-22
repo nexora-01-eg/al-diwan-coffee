@@ -120,6 +120,29 @@ const SLOT_IMGS={
  19:'assets/gallery/g13.jpg',20:'assets/gallery/g06.jpg',
  21:'assets/gallery/g01.jpg'};
 function bindSlotImgs(){$$('.img-ph[data-slot]').forEach(el=>{const src=SLOT_IMGS[el.dataset.slot];if(src){const desc=el.querySelector('small')?.textContent||'';setPhImg(el,src,el.dataset.slot,desc);}});}
+/* حقن صور سيكشن الحكاية مباشرة */
+(function(){
+  const els = document.querySelectorAll('#story .story-media .scene-ph');
+  if(!els.length) return;
+  els.forEach((el, i) => {
+    if(el.querySelector('picture') || el.querySelector('img')) return;
+    const n = i + 1;
+    const pic = document.createElement('picture');
+    const webp = document.createElement('source');
+    webp.type = 'image/webp';
+    webp.srcset = 'assets/story/s' + n + '.webp';
+    const jpg = document.createElement('img');
+    jpg.src = 'assets/story/s' + n + '.jpg';
+    jpg.alt = 'مشهد قصة الديوان ' + n;
+    jpg.loading = (i === 0) ? 'eager' : 'lazy';
+    jpg.decoding = 'async';
+    pic.appendChild(webp);
+    pic.appendChild(jpg);
+    el.appendChild(pic);
+    el.classList.add('has-img');
+  });
+})();
+
 bindSlotImgs();
 
 /* ---------- 2) LOADER (cinematic sequence — real progress, never traps) ---------- */
