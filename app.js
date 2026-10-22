@@ -196,12 +196,15 @@ addEventListener('scroll',()=>{
  $('#progress').style.width=p+'%';
 },{passive:true});
 
-/* share-ticker: أهدئ الشريط المتحرك أثناء السكرول الفعلي */
-(()=>{let t=null;addEventListener('scroll',()=>{document.body.classList.add('is-scrolling');
- clearTimeout(t);t=setTimeout(()=>document.body.classList.remove('is-scrolling'),200);},{passive:true});})();
+/* lenis keeps the is-scrolling ticker paused (native scroll kept for no-lenis fallback) */
 
-/* Lenis smooth (local vendor + GSAP ticker sync + anchor glide) */
-try{if(!reduced&&window.Lenis){const lenis=new Lenis({smoothWheel:true,lerp:.09});window.__lenis=lenis;
+/* Lenis smooth (local vendor + GSAP ticker sync + anchor glide)
+   — jitter fixes: ROUNDED wheel steps + no touch smooth + slower lerp + html scroll-behavior:auto */
+try{if(!reduced&&window.Lenis){const lenis=new Lenis({smoothWheel:true,lerp:.14,wheelMultiplier:.9,
+ smoothTouch:false,touchMultiplier:1.6,syncTouch:false});
+ lenis.on('scroll',()=>{document.body.classList.add('is-scrolling');clearTimeout(window.__iscT);
+  window.__iscT=setTimeout(()=>document.body.classList.remove('is-scrolling'),260);});
+ window.__lenis=lenis;
 if(window.gsap&&window.ScrollTrigger){lenis.on('scroll',ScrollTrigger.update);gsap.ticker.add(t=>lenis.raf(t*1000));gsap.ticker.lagSmoothing(0);}
 else{const raf=t=>{lenis.raf(t);requestAnimationFrame(raf);};requestAnimationFrame(raf);}
 $$('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{let t=null;try{t=$(a.getAttribute('href'));}catch(err){t=null;}
