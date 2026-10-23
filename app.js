@@ -114,46 +114,12 @@ function setPhImg(el,src,label,desc){
    1 فنجان الهيرو | 2-6 مشاهد القصة (أصل→تحميص→خلطة→فنجان→منتج) | 11-15 المجلس | 16-20 حكاية الديوان | 21 بانر الباند */
 const SLOT_IMGS={
  1:'assets/hero-cup.jpg?v=7',
- 2:'assets/story/s1.jpg?v=7',3:'assets/story/s2.jpg?v=7',4:'assets/story/s3.jpg?v=7',5:'assets/story/s4.jpg?v=7',6:'assets/story/s5.jpg?v=7',
  11:'assets/gallery/g09.jpg?v=7',12:'assets/gallery/g10.jpg?v=7',13:'assets/gallery/g11.jpg?v=7',
  14:'assets/gallery/g14.jpg?v=7',15:'assets/gallery/g08.jpg?v=7',
  16:'assets/gallery/g05.jpg?v=7',17:'assets/gallery/g02.jpg?v=7',18:'assets/gallery/g07.jpg?v=7',
  19:'assets/gallery/g13.jpg?v=7',20:'assets/gallery/g06.jpg?v=7',
  21:'assets/gallery/g01.jpg?v=7'};
 function bindSlotImgs(){$$('.img-ph[data-slot]').forEach(el=>{const src=SLOT_IMGS[el.dataset.slot];if(src){const desc=el.querySelector('small')?.textContent||'';setPhImg(el,src,el.dataset.slot,desc);}});}
-/* حقن صور سيكشن الحكاية مباشرة */
-(function(){
-  const els = document.querySelectorAll('#story .story-media .scene-ph, .story-media .img-ph.scene-ph');
-  if(!els.length) return;
-  els.forEach((el, i) => {
-    let pic = el.querySelector('picture');
-    if(!pic){
-      pic = document.createElement('picture');
-      el.insertBefore(pic, el.firstChild);
-    }
-    let webp = pic.querySelector('source[type="image/webp"]');
-    if(!webp){
-      webp = document.createElement('source');
-      webp.type = 'image/webp';
-      pic.appendChild(webp);
-    }
-    const n = i + 1, V = '?v=7';
-    webp.setAttribute('srcset', 'assets/story/s' + n + '.webp' + V);
-    let img = pic.querySelector('img');
-    if(!img){
-      img = document.createElement('img');
-      pic.appendChild(img);
-    }
-    img.alt = 'مشهد قصة الديوان ' + n;
-    img.loading = (i === 0) ? 'eager' : 'lazy';
-    img.decoding = 'async';
-    if(img.getAttribute('src') !== 'assets/story/s' + n + '.jpg' + V){
-      img.setAttribute('src', 'assets/story/s' + n + '.jpg' + V);
-    }
-    el.classList.add('has-img');
-    el.classList.remove('noimg');
-  });
-})();
 
 bindSlotImgs();
 
@@ -244,9 +210,34 @@ $$('.rv').forEach(el=>io.observe(el));})();
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
  const m=new THREE.PointsMaterial({color:0xd9b877,size:.045,transparent:true,opacity:.85,depthWrite:false});
  scene.add(new THREE.Points(g,m));
- /* floating beans = scaled spheres, cheap instanced */
- const beanGeo=new THREE.SphereGeometry(.16,10,8);beanGeo.scale(1,.68,.55);
- const beanMat=new THREE.MeshStandardMaterial({color:0x4a2c14,roughness:.55,metalness:.25});
+ /* floating beans = textured instanced (baked-shading, real look) */
+ function beanTexture(){
+  const c=document.createElement('canvas');c.width=256;c.height=256;const x=c.getContext('2d');
+  const grd=x.createLinearGradient(30,40,226,216);
+  grd.addColorStop(0,'#7a4a22');grd.addColorStop(.45,'#4d2c12');grd.addColorStop(1,'#241105');
+  x.fillStyle=grd;x.fillRect(0,0,256,256);
+  /* soft top-left sheen */
+  const sh=x.createRadialGradient(78,64,4,78,64,150);
+  sh.addColorStop(0,'rgba(255,222,160,.50)');sh.addColorStop(.55,'rgba(255,200,120,.10)');sh.addColorStop(1,'rgba(0,0,0,0)');
+  x.fillStyle=sh;x.fillRect(0,0,256,256);
+  /* bottom-right shade */
+  const sh2=x.createRadialGradient(210,215,6,210,215,180);
+  sh2.addColorStop(0,'rgba(0,0,0,.42)');sh2.addColorStop(1,'rgba(0,0,0,0)');
+  x.fillStyle=sh2;x.fillRect(0,0,256,256);
+  /* center crease — darker curve band */
+  x.strokeStyle='rgba(16,6,0,.85)';x.lineWidth=7;x.lineCap='round';
+  x.beginPath();x.moveTo(128,26);x.bezierCurveTo(96,90,158,166,120,232);x.stroke();
+  x.strokeStyle='rgba(120,72,30,.35)';x.lineWidth=3;
+  x.beginPath();x.moveTo(119,30);x.bezierCurveTo(88,92,149,168,111,228);x.stroke();
+  /* fine micro-grain noise */
+  for(let i=0;i<900;i++){x.fillStyle='rgba(0,0,0,'+(Math.random()*.09)+')';
+   x.fillRect(Math.random()*256,Math.random()*256,1.6,1.6);}
+  for(let i=0;i<500;i++){x.fillStyle='rgba(190,130,70,'+(Math.random()*.08)+')';
+   x.fillRect(Math.random()*256,Math.random()*256,1.6,1.6);}
+  const t=new THREE.CanvasTexture(c);if('SRGBColorSpace' in THREE)t.colorSpace=THREE.SRGBColorSpace;else t.encoding=THREE.sRGBEncoding;return t;}
+ const beanTex=beanTexture();
+ const beanGeo=new THREE.SphereGeometry(.16,18,14);beanGeo.scale(1,.68,.55);
+ const beanMat=new THREE.MeshStandardMaterial({color:0xffffff,map:beanTex,roughness:.62,metalness:.12});
  const beans=new THREE.InstancedMesh(beanGeo,beanMat,isMobile?14:26);
  const dummy=new THREE.Object3D(),data=[];
  for(let i=0;i<beans.count;i++){data.push({x:(Math.random()-.5)*14,y:(Math.random()-.5)*8,z:(Math.random()-.5)*5-1,
@@ -352,22 +343,21 @@ const SCENES=[
   {n:'04',k:'SCENE 04 — THE BREW',t:'الفنجان',d:'طحن فوري وصب القهوة على أصولها، مع العناية برغوة فنجان الديوان الرقيقة.'},
   {n:'05',k:'SCENE 05 — THE SERVE',t:'التقديم',d:'فنجان الديوان جاهز... رائحة أصيلة بطعم لا يُنسى يُقدّم بأصالة.'},
 ];
-(()=>{const dots=$('#sceneDots'),imgs=$$('.story-media .scene-ph');let cur=0,last=0;
-if(!dots||!imgs.length)return;
-SCENES.forEach((s,i)=>{const b=document.createElement('button');b.setAttribute('aria-label',s.t);
-if(i===0)b.classList.add('on');b.onclick=()=>{setScene(i);last=performance.now();};dots.appendChild(b);});
-function setScene(i){cur=i;imgs.forEach((im,k)=>im.classList.toggle('active',k===i));
-[...dots.children].forEach((d,k)=>d.classList.toggle('on',k===i));
-$('#sceneNum').textContent=SCENES[i].n;$('#sceneKick').textContent=SCENES[i].k;
-$('#sceneTitle').textContent=SCENES[i].t;$('#sceneDesc').textContent=SCENES[i].d;
+(()=>{const dots=$('#sceneDots'),imgs=$$('.story-media .scene-ph');let cur=0,timer=null;const HOLD=5000;
+if(!dots)return;
+/* لو مفيش صور (فاضية لحد ما ستضيف الجديدة) ناخي البانل من السيكشن نضيف */
+if(!imgs.some||![...imgs].some(el=>el.querySelector('picture,img'))){const m=$('.story-media');if(m)m.classList.add('no-media');}
+ SCENES.forEach((s,i)=>{const b=document.createElement('button');b.setAttribute('aria-label',s.t);
+if(i===0)b.classList.add('on');b.onclick=()=>{setScene(i);restart();};dots.appendChild(b);});
+function setScene(i){cur=(i+SCENES.length)%SCENES.length;
+ [...imgs].forEach((im,k)=>im.classList.toggle('active',k===cur));
+[...dots.children].forEach((d,k)=>d.classList.toggle('on',k===cur));
+$('#sceneNum').textContent=SCENES[cur].n;$('#sceneKick').textContent=SCENES[cur].k;
+$('#sceneTitle').textContent=SCENES[cur].t;$('#sceneDesc').textContent=SCENES[cur].d;
 if(window.gsap&&!reduced)gsap.from('.scene-card',{x:30,opacity:.4,duration:.6,ease:'power2.out'});}
-setScene(0);
-if(window.gsap&&window.ScrollTrigger&&!reduced){gsap.registerPlugin(ScrollTrigger);
-/* محلّي: تقدّم مشهد واحد فقط في كل مرة + مهلة، حتى لا يسرق السكرول السريع عدة صور */
-ScrollTrigger.create({trigger:'#storyPin',start:'top 78%',end:'bottom 30%',
- onUpdate(self){const idx=Math.min(4,Math.floor(self.progress*5));if(idx===cur)return;
-  const now=performance.now(),cooldown=idx>cur?950:450;
-  if(now-last<cooldown)return;last=now;setScene(cur+(idx>cur?1:-1));}});}
+function restart(){clearInterval(timer);if(!reduced)timer=setInterval(()=>setScene(cur+1),HOLD);}
+setScene(0);restart();
+document.addEventListener('visibilitychange',()=>{if(document.hidden)clearInterval(timer);else restart();});
 window.setScene=setScene;})();
 
 /* ---------- 6b) COUNCIL — معرض أفقي مدفوع بالسكرول الرأسي (ديسكتوب) + سحب/كيبورد ---------- */
@@ -798,10 +788,10 @@ const I18N={
  'قهوة تُحضّر بحكاية...':'Coffee brewed with a story...','وتُقدّم بأصالة':'served with authenticity',
  'تسوق الآن • SHOP':'Shop now • SHOP','فنجان سعيد شهريًا':'happy cups / month','صنف بن أصلي ونضيف':'authentic, pure blends',
  'فرعان حاليًا، والتوسع للقاهرة مستقبلًا':'Two branches now — Cairo coming soon','سنة ولسه مكملين':'years and still going',
- 'اسحب لتبدأ الحكاية':'Scroll to begin the story','أصل القهوة •':'The origin •','تحميص يومي •':'Roasted daily •','سادة • محوج • إكسترا •':'Plain • Spiced • Extra •','بُن الديوان •':'Al-Dewan •',
+ 'اسحب لتبدأ الحكاية':'The story — 5 auto-playing scenes','الحدوته — 5 مشاهد بتتبدل لوحدها':'The story — 5 auto-playing scenes','أصل القهوة •':'The origin •','تحميص يومي •':'Roasted daily •','سادة • محوج • إكسترا •':'Plain • Spiced • Extra •','بُن الديوان •':'Al-Dewan •',
  /* story */
- 'رحلة الفنجان — SCROLL STORY':'Bean to cup — SCROLL STORY','من الحبة...':'From the bean...','للفنجان':'to the cup',
- 'الأصل':'Origin','تذوق أصل القهوة — تسوق الآن':'Taste the origin — shop now',
+ 'رحلة الفنجان — SCROLL STORY':'Bean to cup — STORY','الحدوته — STORY':'Bean to cup — STORY','من الحبة...':'From the bean...','للفنجان':'to the cup',
+ 'مشاهد بتتنقل تلقائيًا بنعومة — كل مشهد يحكي مرحلة من رحلة الحبة للفنجان.':'Scenes glide automatically — each one tells a step of the bean-to-cup journey.','الأصل':'Origin','تذوق أصل القهوة — تسوق الآن':'Taste the origin — shop now',
  /* products / config */
  'المنيو الكامل — SHOP COFFEE':'Full menu — SHOP COFFEE','تسوق':'Shop','البن':'Coffee','الأكثر طلبًا':'Best seller',
  'ربع كيلو':'Quarter kilo','+ سلة':'+ Cart','عرض':'View','عرض سريع — QUICK VIEW':'Quick view — QUICK VIEW',
