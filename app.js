@@ -113,12 +113,13 @@ function setPhImg(el,src,label,desc){
 /* صور المكان + القصة المحدّثة:
    1 فنجان الهيرو | 2-6 مشاهد القصة (أصل→تحميص→خلطة→فنجان→منتج) | 11-15 المجلس | 16-20 حكاية الديوان | 21 بانر الباند */
 const SLOT_IMGS={
- 1:'assets/hero-cup.jpg?v=7',
- 11:'assets/gallery/g09.jpg?v=7',12:'assets/gallery/g10.jpg?v=7',13:'assets/gallery/g11.jpg?v=7',
- 14:'assets/gallery/g14.jpg?v=7',15:'assets/gallery/g08.jpg?v=7',
- 16:'assets/gallery/g05.jpg?v=7',17:'assets/gallery/g02.jpg?v=7',18:'assets/gallery/g07.jpg?v=7',
- 19:'assets/gallery/g13.jpg?v=7',20:'assets/gallery/g06.jpg?v=7',
- 21:'assets/gallery/g01.jpg?v=7'};
+ 1:'assets/hero-cup.jpg?v=8',
+ 2:'assets/story/s1.jpg?v=8',3:'assets/story/s2.jpg?v=8',4:'assets/story/s3.jpg?v=8',5:'assets/story/s4.jpg?v=8',6:'assets/story/s5.jpg?v=8',
+ 11:'assets/gallery/g09.jpg?v=8',12:'assets/gallery/g10.jpg?v=8',13:'assets/gallery/g11.jpg?v=8',
+ 14:'assets/gallery/g14.jpg?v=8',15:'assets/gallery/g08.jpg?v=8',
+ 16:'assets/gallery/g05.jpg?v=8',17:'assets/gallery/g02.jpg?v=8',18:'assets/gallery/g07.jpg?v=8',
+ 19:'assets/gallery/g13.jpg?v=8',20:'assets/gallery/g06.jpg?v=8',
+ 21:'assets/gallery/g01.jpg?v=8'};
 function bindSlotImgs(){$$('.img-ph[data-slot]').forEach(el=>{const src=SLOT_IMGS[el.dataset.slot];if(src){const desc=el.querySelector('small')?.textContent||'';setPhImg(el,src,el.dataset.slot,desc);}});}
 
 bindSlotImgs();
